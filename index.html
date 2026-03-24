@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FUBAM – Sistema de Gestión de Turnos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.4.0/dist/vuetify.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --blue:       #005FA6;
+      --blue-dark:  #00478A;
+      --blue-light: #1976D2;
+      --blue-pale:  #E8F1FB;
+      --bg:         #EEF3F8;
+      --card:       #FFFFFF;
+      --text:       #0D2137;
+      --muted:      #5C7A96;
+      --border:     rgba(0,95,166,.15);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body, #app { height: 100%; font-family: 'Outfit', sans-serif; }
+
+    /* ── Background ── */
+    .bg-scene {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 50% at 20% 0%, rgba(0,95,166,.12) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 80% 100%, rgba(0,95,166,.08) 0%, transparent 60%),
+        #EEF3F8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+    }
+
+    /* ── Header ── */
+    .brand-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--blue);
+      color: #fff;
+      font-size: .78rem;
+      font-weight: 600;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 99px;
+      margin-bottom: 20px;
+    }
+    .brand-badge .dot {
+      width: 7px; height: 7px;
+      background: #fff;
+      border-radius: 50%;
+      animation: blink 1.6s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    .main-title {
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 800;
+      color: var(--text);
+      text-align: center;
+      line-height: 1.1;
+      letter-spacing: -.03em;
+    }
+    .main-title span { color: var(--blue); }
+    .subtitle {
+      font-size: 1.05rem;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 10px;
+      font-weight: 400;
+    }
+
+    /* ── Cards ── */
+    .cards-row {
+      display: flex;
+      gap: 28px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .module-card {
+      width: 300px;
+      background: var(--card);
+      border-radius: 24px;
+      padding: 40px 32px 36px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,95,166,.1), 0 1px 4px rgba(0,0,0,.06);
+      cursor: pointer;
+      transition: transform .25s cubic-bezier(.34,1.56,.64,1), box-shadow .25s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: var(--blue);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform .3s ease;
+    }
+    .module-card:hover { transform: translateY(-8px); box-shadow: 0 16px 48px rgba(0,95,166,.2), 0 2px 8px rgba(0,0,0,.08); }
+    .module-card:hover::before { transform: scaleX(1); }
+
+    .card-icon-wrap {
+      width: 72px; height: 72px;
+      border-radius: 20px;
+      background: var(--blue-pale);
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 24px;
+      transition: background .2s;
+    }
+    .module-card:hover .card-icon-wrap { background: var(--blue); }
+    .card-icon-wrap .mdi { font-size: 36px; color: var(--blue); transition: color .2s; }
+    .module-card:hover .card-icon-wrap .mdi { color: #fff; }
+
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 8px;
+      letter-spacing: -.02em;
+    }
+    .card-desc {
+      font-size: .9rem;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+    .card-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      padding: 13px 24px;
+      width: 100%;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: background .2s, transform .15s;
+    }
+    .card-btn:hover { background: var(--blue-dark); transform: scale(1.02); }
+    .card-btn .mdi { font-size: 18px; }
+
+    /* ── Footer ── */
+    .page-footer {
+      margin-top: 60px;
+      font-size: .8rem;
+      color: var(--muted);
+      text-align: center;
+      letter-spacing: .04em;
+    }
+
+    /* ── Animations ── */
+    .fade-up { animation: fadeUp .6s ease both; }
+    .fade-up-2 { animation: fadeUp .6s .15s ease both; }
+    .fade-up-3 { animation: fadeUp .6s .3s ease both; }
+    .fade-up-4 { animation: fadeUp .6s .42s ease both; }
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(24px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <div class="bg-scene">
+
+    <!-- Header -->
+    <div class="brand-badge fade-up">
+      <span class="dot"></span>
+      Sistema en Línea
+    </div>
+
+    <h1 class="main-title fade-up-2">
+      Gestión de<br><span>Turnos FUBAM</span>
+    </h1>
+    <p class="subtitle fade-up-3">Seleccione el módulo con el que desea trabajar</p>
+
+    <!-- Module cards -->
+    <div class="cards-row fade-up-4">
+
+      <div class="module-card" onclick="go('registrar_turno.html')">
+        <div class="card-icon-wrap">
+          <i class="mdi mdi-clipboard-text-outline"></i>
+        </div>
+        <div class="card-title">Registrar Turno</div>
+        <div class="card-desc">Asigne el turno a la institución que viene a recoger alimentos</div>
+        <button class="card-btn">
+          <i class="mdi mdi-arrow-right-circle"></i>
+          Ir al módulo
+        </button>
+      </div>
+
+      <div class="module-card" onclick="go('llamar_turno.html')">
+        <div class="card-icon-wrap">
+          <i class="mdi mdi-bullhorn-outline"></i>
+        </div>
+        <div class="card-title">Gestión de Turnos</div>
+        <div class="card-desc">Llame, gestione y controle la cola de turnos con anuncio de voz integrado.</div>
+        <button class="card-btn">
+          <i class="mdi mdi-arrow-right-circle"></i>
+          Ir al módulo
+        </button>
+      </div>
+
+    </div>
+
+    <div class="page-footer">
+      FUBAM &nbsp;·&nbsp; Sistema de Gestión de Turnos &nbsp;·&nbsp; <span id="yr"></span>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  document.getElementById('yr').textContent = new Date().getFullYear();
+  function go(url) { window.location.href = url; }
+</script>
+</body>
+</html>

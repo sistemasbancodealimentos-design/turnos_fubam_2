@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registrar Turno – FUBAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/vuetify@3.4.0/dist/vuetify.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --blue:      #005FA6;
+      --blue-dark: #00478A;
+      --blue-pale: #E8F1FB;
+      --bg:        #EEF3F8;
+      --text:      #0D2137;
+      --muted:     #5C7A96;
+      --border:    rgba(0,95,166,.18);
+    }
+    html, body { height: 100%; font-family: 'Outfit', sans-serif !important; }
+    .v-application { font-family: 'Outfit', sans-serif !important; }
+
+    /* Vuetify overrides */
+    .v-field__input, .v-select__selection-text, .v-label { font-family: 'Outfit', sans-serif !important; }
+    .v-btn { font-family: 'Outfit', sans-serif !important; text-transform: none !important; letter-spacing: .02em !important; }
+
+    /* ── Layout ── */
+    .page-bg {
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 60% at 10% 0%, rgba(0,95,166,.1) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 90% 100%, rgba(0,95,166,.07) 0%, transparent 55%),
+        #EEF3F8;
+      padding: 0;
+    }
+
+    /* ── Topbar ── */
+    .topbar {
+      background: var(--blue);
+      color: #fff;
+      padding: 14px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 2px 12px rgba(0,95,166,.25);
+    }
+    .topbar .brand { font-size: 1.1rem; font-weight: 700; letter-spacing: .05em; display: flex; align-items: center; gap: 10px; }
+    .topbar .clock { font-family: 'DM Mono', monospace; font-size: .95rem; opacity: .85; }
+    .back-link {
+      color: rgba(255,255,255,.75);
+      font-size: .85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: color .15s;
+      text-decoration: none;
+    }
+    .back-link:hover { color: #fff; }
+
+    /* ── Main content ── */
+    .content-wrap {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 28px;
+      padding: 40px 24px;
+      flex-wrap: wrap;
+    }
+
+    /* ── Form card ── */
+    .form-card {
+      background: #fff;
+      border-radius: 24px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,95,166,.1);
+      padding: 40px 36px;
+      width: 100%;
+      max-width: 480px;
+    }
+    .form-card h2 {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 4px;
+      letter-spacing: -.03em;
+    }
+    .form-card .form-sub {
+      font-size: .9rem;
+      color: var(--muted);
+      margin-bottom: 32px;
+    }
+
+    /* Queue counter pill */
+    .queue-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--blue-pale);
+      color: var(--blue);
+      font-size: .85rem;
+      font-weight: 600;
+      border-radius: 99px;
+      padding: 7px 16px;
+      margin-bottom: 28px;
+    }
+    .queue-pill .mdi { font-size: 16px; }
+
+    /* Service grid */
+    .service-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 4px 0 24px;
+    }
+    .service-chip {
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px 10px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted);
+      transition: all .2s;
+      text-align: center;
+      line-height: 1.3;
+    }
+    .service-chip .mdi { font-size: 24px; color: var(--muted); transition: color .2s; }
+    .service-chip:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+    .service-chip:hover .mdi { color: var(--blue); }
+    .service-chip.active { border-color: var(--blue); background: var(--blue); color: #fff; }
+    .service-chip.active .mdi { color: #fff; }
+
+    /* Inputs */
+    .field-label { font-size: .8rem; font-weight: 600; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; margin-bottom: 6px; }
+    .custom-input {
+      width: 100%;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 16px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      color: var(--text);
+      background: #fff;
+      outline: none;
+      transition: border-color .2s, box-shadow .2s;
+      margin-bottom: 20px;
+    }
+    .custom-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(0,95,166,.12); }
+    .custom-input::placeholder { color: #B0BEC5; }
+
+    /* Submit button */
+    .btn-register {
+      width: 100%;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      padding: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      margin-top: 8px;
+      letter-spacing: .02em;
+    }
+    .btn-register:hover:not(:disabled) { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,95,166,.3); }
+    .btn-register:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-register .mdi { font-size: 20px; }
+
+    .error-msg { color: #C62828; font-size: .85rem; margin-top: -14px; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
+
+    /* ── Success card ── */
+    .success-card {
+      background: #fff;
+      border-radius: 24px;
+      border: 1.5px solid var(--border);
+      box-shadow: 0 4px 24px rgba(0,95,166,.1);
+      padding: 48px 36px;
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+      animation: popIn .4s cubic-bezier(.34,1.56,.64,1) both;
+    }
+    @keyframes popIn { from { opacity:0; transform: scale(.88); } to { opacity:1; transform: scale(1); } }
+
+    .success-icon {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: #E8F5E9;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 20px;
+    }
+    .success-icon .mdi { font-size: 38px; color: #2E7D32; }
+
+    .turn-number {
+      font-size: 5rem;
+      font-weight: 800;
+      color: var(--blue);
+      letter-spacing: -.04em;
+      line-height: 1;
+      margin: 12px 0;
+      font-family: 'DM Mono', monospace;
+    }
+    .turn-label { font-size: .8rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+    .turn-name  { font-size: 1.2rem; font-weight: 700; color: var(--text); margin-top: 12px; }
+    .turn-service {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--blue-pale); color: var(--blue);
+      font-size: .85rem; font-weight: 600;
+      border-radius: 99px; padding: 5px 14px;
+      margin-top: 8px;
+    }
+
+    .divider { border: none; border-top: 1.5px solid var(--border); margin: 24px 0; }
+
+    .btn-secondary {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: .9rem;
+      font-weight: 600;
+      color: var(--muted);
+      background: none;
+      cursor: pointer;
+      width: 100%;
+      margin-bottom: 10px;
+      transition: all .2s;
+    }
+    .btn-secondary:hover { border-color: var(--blue); color: var(--blue); background: var(--blue-pale); }
+    .btn-secondary .mdi { font-size: 18px; }
+
+    .btn-new {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      background: var(--blue);
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-family: 'Outfit', sans-serif;
+      font-size: .9rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      width: 100%;
+      transition: background .2s;
+    }
+    .btn-new:hover { background: var(--blue-dark); }
+    .btn-new .mdi { font-size: 18px; }
+
+    /* Animations */
+    .fade-in { animation: fadeIn .4s ease both; }
+    @keyframes fadeIn { from { opacity:0; transform: translateY(16px); } to { opacity:1; transform: translateY(0); } }
+
+    /* Print styles */
+    @media print {
+      .topbar, .form-card, .btn-secondary, .btn-new, .page-footer { display: none !important; }
+      .content-wrap { padding: 0; justify-content: center; }
+      .success-card { box-shadow: none; border: 2px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <i class="mdi mdi-hospital-building" style="font-size:20px"></i>
+      FUBAM
+    </div>
+    <span class="clock">{{ clock }}</span>
+    <a class="back-link" href="index.html">
+      <i class="mdi mdi-chevron-left"></i> Inicio
+    </a>
+  </div>
+
+  <div class="page-bg">
+    <div class="content-wrap">
+
+      <!-- ── FORM ── -->
+      <div class="form-card fade-in" v-if="!turnoRegistrado">
+
+        <h2>Registrar Turno</h2>
+        <p class="form-sub">Complete los datos para asignar un número de atención.</p>
+
+        <div class="queue-pill">
+          <i class="mdi mdi-account-group"></i>
+          {{ stats.pendientes }} persona{{ stats.pendientes !== 1 ? 's' : '' }} esperando actualmente
+        </div>
+
+        <!-- Nombre -->
+        <div class="field-label">Nombre completo *</div>
+        <input
+          class="custom-input"
+          :class="{ 'error-border': errors.nombre }"
+          v-model="form.nombre"
+          placeholder="Ej: Juan Pérez"
+          @input="errors.nombre = ''"
+          maxlength="80"
+        />
+        <div class="error-msg" v-if="errors.nombre"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.nombre }}</div>
+
+        <!-- Servicio -->
+        <div class="field-label" style="margin-bottom:10px">Servicio *</div>
+        <div class="service-grid">
+          <div
+            v-for="s in servicios"
+            :key="s.value"
+            class="service-chip"
+            :class="{ active: form.servicio === s.value }"
+            @click="form.servicio = s.value; errors.servicio = ''"
+          >
+            <i :class="'mdi ' + s.icon"></i>
+            {{ s.label }}
+          </div>
+        </div>
+        <div class="error-msg" v-if="errors.servicio" style="margin-top:-16px"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.servicio }}</div>
+
+        <!-- Documento (optional) -->
+        <div class="field-label" style="margin-top:4px">N° de documento <span style="font-weight:400;text-transform:none">(opcional)</span></div>
+        <input
+          class="custom-input"
+          v-model="form.documento"
+          placeholder="DNI / CUIL"
+          maxlength="20"
+        />
+
+        <!-- Submit -->
+        <button class="btn-register" :disabled="loading" @click="registrar">
+          <span v-if="!loading">
+            <i class="mdi mdi-ticket-confirmation-outline"></i>
+            Registrar Turno
+          </span>
+          <span v-else>
+            <i class="mdi mdi-loading mdi-spin"></i>
+            Registrando...
+          </span>
+        </button>
+
+        <div class="error-msg" v-if="apiError" style="justify-content:center;margin-top:12px">
+          <i class="mdi mdi-wifi-off"></i> {{ apiError }}
+        </div>
+      </div>
+
+      <!-- ── SUCCESS ── -->
+      <div class="success-card" v-if="turnoRegistrado">
+        <div class="success-icon">
+          <i class="mdi mdi-check-circle-outline"></i>
+        </div>
+        <div class="turn-label">Su número de turno</div>
+        <div class="turn-number">{{ turnoActual.numero.toString().padStart(3, '0') }}</div>
+        <div class="turn-name">{{ turnoActual.nombre }}</div>
+        <div>
+          <span class="turn-service">
+            <i :class="'mdi ' + servicioIcon(turnoActual.servicio)"></i>
+            {{ turnoActual.servicio }}
+          </span>
+        </div>
+
+        <hr class="divider" />
+
+        <p style="font-size:.85rem;color:var(--muted);margin-bottom:20px">
+          Por favor espere en sala. Se le llamará por altavoz cuando sea su turno.
+        </p>
+
+        <button class="btn-secondary" @click="imprimir">
+          <i class="mdi mdi-printer-outline"></i> Imprimir comprobante
+        </button>
+        <button class="btn-new" @click="nuevoTurno">
+          <i class="mdi mdi-plus-circle-outline"></i> Registrar otro turno
+        </button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const API = 'http://localhost:3000/api';
+
+const SERVICIOS = [
+  { value: 'Recoger Alimentos',  label: 'Recoger Alimentos',  icon: 'mdi-cart-outline' },
+];
+
+Vue.createApp({
+  data() {
+    return {
+      clock:          '',
+      form:           { nombre: '', servicio: '', documento: '' },
+      errors:         { nombre: '', servicio: '' },
+      apiError:       '',
+      loading:        false,
+      turnoRegistrado: false,
+      turnoActual:    null,
+      stats:          { pendientes: 0 },
+      servicios:      SERVICIOS,
+    };
+  },
+  mounted() {
+    this.tickClock();
+    this.loadStats();
+    setInterval(this.tickClock, 1000);
+    setInterval(this.loadStats, 8000);
+  },
+  methods: {
+    tickClock() {
+      this.clock = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    },
+    async loadStats() {
+      try {
+        const r = await fetch(`${API}/stats`);
+        this.stats = await r.json();
+      } catch { /* backend offline */ }
+    },
+    validate() {
+      let ok = true;
+      if (!this.form.nombre.trim()) { this.errors.nombre  = 'El nombre es obligatorio.'; ok = false; }
+      if (!this.form.servicio)      { this.errors.servicio = 'Seleccione un servicio.';   ok = false; }
+      return ok;
+    },
+    async registrar() {
+      this.apiError = '';
+      if (!this.validate()) return;
+      this.loading = true;
+      try {
+        const r = await fetch(`${API}/turnos`, {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify(this.form),
+        });
+        if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
+        this.turnoActual    = await r.json();
+        this.turnoRegistrado = true;
+        this.loadStats();
+      } catch (e) {
+        this.apiError = e.message || 'No se pudo conectar con el servidor. Verifique que el backend esté corriendo.';
+      } finally {
+        this.loading = false;
+      }
+    },
+    nuevoTurno() {
+      this.form           = { nombre: '', servicio: '', documento: '' };
+      this.errors         = { nombre: '', servicio: '' };
+      this.turnoRegistrado = false;
+      this.turnoActual    = null;
+    },
+    imprimir() { window.print(); },
+    servicioIcon(s) {
+      const found = SERVICIOS.find(x => x.value === s);
+      return found ? found.icon : 'mdi-medical-bag';
+    },
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

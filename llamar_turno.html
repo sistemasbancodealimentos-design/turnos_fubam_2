@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gestión de Turnos – FUBAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --blue:       #005FA6;
+      --blue-dark:  #00478A;
+      --blue-light: #1976D2;
+      --blue-pale:  #E8F1FB;
+      --bg:         #EEF3F8;
+      --card:       #FFFFFF;
+      --text:       #0D2137;
+      --muted:      #5C7A96;
+      --border:     rgba(0,95,166,.15);
+      --green:      #2E7D32;
+      --green-pale: #E8F5E9;
+      --orange:     #E65100;
+      --orange-pale:#FBE9E7;
+      --gray-pale:  #F5F7FA;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Outfit', sans-serif; background: var(--bg); }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      height: 56px;
+      background: var(--blue);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0,95,166,.3);
+      position: relative;
+      z-index: 10;
+    }
+    .topbar .brand { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .topbar .sep   { width: 1px; height: 20px; background: rgba(255,255,255,.25); }
+    .topbar .page-title { font-size: .9rem; opacity: .8; }
+    .topbar .clock { font-family: 'DM Mono', monospace; font-size: .9rem; margin-left: auto; opacity: .85; }
+    .back-link { color: rgba(255,255,255,.7); font-size: .82rem; display: flex; align-items: center; gap: 3px; text-decoration: none; margin-left: 12px; transition: color .15s; }
+    .back-link:hover { color: #fff; }
+
+    /* ── STATS BAR ── */
+    .stats-bar {
+      background: #fff;
+      border-bottom: 1.5px solid var(--border);
+      display: flex;
+      align-items: stretch;
+      padding: 0 24px;
+      overflow-x: auto;
+    }
+    .stat-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 20px;
+      border-right: 1.5px solid var(--border);
+      min-width: 150px;
+    }
+    .stat-item:last-child { border-right: none; }
+    .stat-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .stat-icon .mdi { font-size: 18px; }
+    .stat-value { font-size: 1.4rem; font-weight: 800; font-family: 'DM Mono', monospace; line-height: 1; color: var(--text); }
+    .stat-label { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-top: 1px; }
+
+    /* ── LAYOUT ── */
+    .main-layout {
+      display: flex;
+      height: calc(100vh - 56px - 65px);
+      overflow: hidden;
+    }
+
+    /* ── DISPLAY PANEL (Left) ── */
+    .display-panel {
+      flex: 1 1 55%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px;
+      background:
+        radial-gradient(ellipse 100% 80% at 50% 100%, rgba(0,95,166,.08) 0%, transparent 60%),
+        var(--bg);
+      position: relative;
+    }
+    .display-panel .fubam-watermark {
+      position: absolute;
+      top: 20px; left: 50%;
+      transform: translateX(-50%);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(0,95,166,.3);
+      white-space: nowrap;
+    }
+
+    .turn-display {
+      text-align: center;
+      padding: 48px 40px;
+      background: #fff;
+      border-radius: 28px;
+      border: 2px solid var(--border);
+      box-shadow: 0 8px 48px rgba(0,95,166,.12), 0 2px 8px rgba(0,0,0,.04);
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      overflow: hidden;
+    }
+    .turn-display::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 5px;
+      background: linear-gradient(90deg, var(--blue), var(--blue-light));
+    }
+
+    .turn-display.calling {
+      animation: callPulse .5s ease;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 4px rgba(0,95,166,.15), 0 8px 48px rgba(0,95,166,.2);
+    }
+    @keyframes callPulse {
+      0%   { transform: scale(1);    }
+      30%  { transform: scale(1.03); }
+      60%  { transform: scale(.98);  }
+      100% { transform: scale(1);    }
+    }
+
+    .display-label {
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .display-number {
+      font-family: 'DM Mono', monospace;
+      font-size: 7rem;
+      font-weight: 500;
+      color: var(--blue);
+      line-height: 1;
+      letter-spacing: -.04em;
+      transition: all .35s cubic-bezier(.34,1.56,.64,1);
+    }
+    .display-number.animate { animation: numIn .4s cubic-bezier(.34,1.56,.64,1) both; }
+    @keyframes numIn {
+      from { opacity: 0; transform: scale(.7) translateY(20px); }
+      to   { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    .display-name {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-top: 14px;
+      letter-spacing: -.02em;
+    }
+    .display-service {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--blue-pale);
+      color: var(--blue);
+      font-size: .85rem;
+      font-weight: 600;
+      border-radius: 99px;
+      padding: 6px 16px;
+      margin-top: 10px;
+    }
+    .display-service .mdi { font-size: 16px; }
+
+    .display-empty {
+      text-align: center;
+      padding: 40px;
+      color: var(--muted);
+    }
+    .display-empty .mdi { font-size: 56px; opacity: .3; display: block; margin-bottom: 12px; }
+    .display-empty p { font-size: 1rem; font-weight: 500; }
+
+    /* Voice status */
+    .voice-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 20px;
+      font-size: .8rem;
+      color: var(--muted);
+      background: var(--gray-pale);
+      border-radius: 99px;
+      padding: 7px 16px;
+    }
+    .voice-status .dot {
+      width: 7px; height: 7px; border-radius: 50%;
+      background: #B0BEC5;
+      transition: background .3s;
+    }
+    .voice-status .dot.speaking { background: var(--green); animation: blink 0.8s infinite; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+
+    /* ── CONTROL PANEL (Right) ── */
+    .control-panel {
+      flex: 0 0 400px;
+      background: #fff;
+      border-left: 1.5px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Action buttons */
+    .actions-section {
+      padding: 20px;
+      border-bottom: 1.5px solid var(--border);
+      flex-shrink: 0;
+    }
+    .btn-main {
+      width: 100%;
+      background: var(--blue);
+      color: #fff;
+      font-family: 'Outfit', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background .2s, transform .15s, box-shadow .2s;
+      letter-spacing: .02em;
+      margin-bottom: 10px;
+    }
+    .btn-main:hover:not(:disabled) { background: var(--blue-dark); box-shadow: 0 4px 16px rgba(0,95,166,.3); transform: translateY(-1px); }
+    .btn-main:disabled { opacity: .45; cursor: not-allowed; }
+    .btn-main .mdi { font-size: 22px; }
+
+    .btn-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .btn-sm {
+      font-family: 'Outfit', sans-serif;
+      font-size: .85rem;
+      font-weight: 600;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: none;
+      transition: all .2s;
+    }
+    .btn-sm .mdi { font-size: 17px; }
+    .btn-sm:disabled { opacity: .4; cursor: not-allowed; }
+
+    .btn-repeat  { color: var(--blue-light); }
+    .btn-repeat:hover:not(:disabled)  { background: var(--blue-pale); border-color: var(--blue-light); }
+    .btn-attend  { color: var(--green); }
+    .btn-attend:hover:not(:disabled)  { background: var(--green-pale); border-color: var(--green); }
+    .btn-skip    { color: var(--orange); }
+    .btn-skip:hover:not(:disabled)    { background: var(--orange-pale); border-color: var(--orange); }
+    .btn-reset   { color: var(--muted); }
+    .btn-reset:hover:not(:disabled)   { background: var(--gray-pale); border-color: var(--muted); }
+
+    /* Queue list */
+    .queue-section { flex: 1; overflow: hidden; display: flex; flex-direction: column; }
+    .queue-header {
+      padding: 14px 20px 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .queue-header h3 { font-size: .85rem; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+
+    .tab-pills { display: flex; gap: 4px; }
+    .tab-pill {
+      font-family: 'Outfit', sans-serif;
+      font-size: .78rem;
+      font-weight: 600;
+      padding: 5px 12px;
+      border-radius: 99px;
+      border: none;
+      cursor: pointer;
+      transition: all .2s;
+      background: none;
+      color: var(--muted);
+    }
+    .tab-pill.active { background: var(--blue); color: #fff; }
+
+    .queue-list { flex: 1; overflow-y: auto; padding: 0 12px 12px; }
+
+    .queue-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      margin-bottom: 5px;
+      cursor: default;
+      transition: background .15s;
+    }
+    .queue-item:hover { background: var(--gray-pale); }
+    .queue-item.is-called { background: var(--blue-pale); border: 1.5px solid rgba(0,95,166,.2); }
+
+    .q-num {
+      font-family: 'DM Mono', monospace;
+      font-size: .9rem;
+      font-weight: 500;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: var(--blue-pale);
+      color: var(--blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: .82rem;
+    }
+    .is-called .q-num { background: var(--blue); color: #fff; }
+    .is-attended .q-num { background: var(--green-pale); color: var(--green); }
+    .is-skipped .q-num  { background: var(--orange-pale); color: var(--orange); }
+
+    .q-info { flex: 1; min-width: 0; }
+    .q-name { font-size: .88rem; font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .q-service { font-size: .75rem; color: var(--muted); display: flex; align-items: center; gap: 3px; }
+    .q-service .mdi { font-size: 12px; }
+
+    .q-badge {
+      font-size: .7rem; font-weight: 600; padding: 3px 9px; border-radius: 99px; flex-shrink: 0;
+    }
+    .badge-pending  { background: #FFF3E0; color: #E65100; }
+    .badge-called   { background: var(--blue-pale); color: var(--blue); }
+    .badge-attended { background: var(--green-pale); color: var(--green); }
+    .badge-skipped  { background: var(--orange-pale); color: #BF360C; }
+
+    .q-call-btn {
+      width: 30px; height: 30px; border-radius: 8px; border: 1.5px solid var(--border);
+      background: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: var(--blue); transition: all .15s; flex-shrink: 0;
+    }
+    .q-call-btn:hover { background: var(--blue); color: #fff; border-color: var(--blue); }
+    .q-call-btn .mdi { font-size: 15px; }
+
+    .queue-empty {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+    .queue-empty .mdi { font-size: 40px; opacity: .3; display: block; margin-bottom: 8px; }
+    .queue-empty p { font-size: .9rem; }
+
+    /* ── Reset confirm overlay ── */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.4);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 100;
+    }
+    .confirm-card {
+      background: #fff;
+      border-radius: 20px;
+      padding: 36px;
+      max-width: 360px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 16px 48px rgba(0,0,0,.2);
+    }
+    .confirm-card h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
+    .confirm-card p  { font-size: .9rem; color: var(--muted); margin-bottom: 24px; }
+    .confirm-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .confirm-cancel {
+      padding: 12px; border: 2px solid var(--border); border-radius: 12px;
+      background: none; font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 600;
+      color: var(--muted); cursor: pointer; transition: all .2s;
+    }
+    .confirm-cancel:hover { border-color: var(--muted); background: var(--gray-pale); }
+    .confirm-ok {
+      padding: 12px; border: none; border-radius: 12px;
+      background: #C62828; color: #fff;
+      font-family: 'Outfit', sans-serif; font-size: .9rem; font-weight: 700;
+      cursor: pointer; transition: background .2s;
+    }
+    .confirm-ok:hover { background: #B71C1C; }
+
+    /* ── Toast ── */
+    .toast {
+      position: fixed;
+      bottom: 24px; left: 50%;
+      transform: translateX(-50%);
+      background: #263238;
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 12px;
+      font-size: .9rem;
+      font-weight: 500;
+      box-shadow: 0 4px 20px rgba(0,0,0,.25);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: toastIn .3s ease both;
+      pointer-events: none;
+    }
+    .toast .mdi { font-size: 18px; }
+    @keyframes toastIn { from { opacity:0; transform: translateX(-50%) translateY(12px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .main-layout { flex-direction: column; height: auto; overflow: visible; }
+      .display-panel { min-height: 360px; }
+      .control-panel { flex: none; width: 100%; height: auto; }
+      .queue-section { max-height: 340px; }
+    }
+  </style>
+</head>
+<body>
+<div id="app">
+
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="brand">
+      <i class="mdi mdi-hospital-building" style="font-size:18px"></i>
+      FUBAM
+    </div>
+    <div class="sep"></div>
+    <span class="page-title">Gestión de Turnos</span>
+    <span class="clock">{{ clock }}</span>
+    <a class="back-link" href="index.html">
+      <i class="mdi mdi-home-outline"></i> Inicio
+    </a>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar">
+    <div class="stat-item">
+      <div class="stat-icon" style="background:#E8F1FB">
+        <i class="mdi mdi-ticket-outline" style="color:var(--blue)"></i>
+      </div>
+      <div>
+        <div class="stat-value">{{ stats.total }}</div>
+        <div class="stat-label">Total</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon" style="background:#FFF3E0">
+        <i class="mdi mdi-clock-outline" style="color:#E65100"></i>
+      </div>
+      <div>
+        <div class="stat-value" style="color:#E65100">{{ stats.pendientes }}</div>
+        <div class="stat-label">Pendientes</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon" style="background:var(--blue-pale)">
+        <i class="mdi mdi-bullhorn-outline" style="color:var(--blue)"></i>
+      </div>
+      <div>
+        <div class="stat-value" style="color:var(--blue)">{{ stats.llamados }}</div>
+        <div class="stat-label">Llamados</div>
+      </div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-icon" style="background:#E8F5E9">
+        <i class="mdi mdi-check-circle-outline" style="color:var(--green)"></i>
+      </div>
+      <div>
+        <div class="stat-value" style="color:var(--green)">{{ stats.atendidos }}</div>
+        <div class="stat-label">Atendidos</div>
+      </div>
+    </div>
+    <div class="stat-item" style="margin-left:auto">
+      <div class="stat-icon" style="background:var(--gray-pale)">
+        <i class="mdi" :class="voiceAvailable ? 'mdi-volume-high' : 'mdi-volume-off'" :style="{ color: voiceAvailable ? 'var(--blue)' : '#B0BEC5' }"></i>
+      </div>
+      <div>
+        <div class="stat-value" style="font-size:.9rem;font-family:'Outfit',sans-serif">
+          {{ voiceAvailable ? 'Activo' : 'No disp.' }}
+        </div>
+        <div class="stat-label">Módulo de Voz</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main layout -->
+  <div class="main-layout">
+
+    <!-- ── DISPLAY PANEL ── -->
+    <div class="display-panel">
+      <div class="fubam-watermark">FUBAM · Sistema de Turnos</div>
+
+      <div class="turn-display" :class="{ calling: animating }">
+
+        <div v-if="turnoActual">
+          <div class="display-label">Turno en curso</div>
+          <div class="display-number" :class="{ animate: animating }">
+            {{ String(turnoActual.numero).padStart(3, '0') }}
+          </div>
+          <div class="display-name">{{ turnoActual.nombre }}</div>
+          <div style="margin-top:10px">
+            <span class="display-service">
+              <i :class="'mdi ' + servicioIcon(turnoActual.servicio)"></i>
+              {{ turnoActual.servicio }}
+            </span>
+          </div>
+        </div>
+
+        <div class="display-empty" v-else>
+          <i class="mdi mdi-ticket-outline"></i>
+          <p>No hay turno activo</p>
+          <p style="font-size:.82rem;margin-top:4px;opacity:.6">Presione "Llamar Siguiente" para comenzar</p>
+        </div>
+
+      </div>
+
+      <!-- Voice status -->
+      <div class="voice-status">
+        <div class="dot" :class="{ speaking: isSpeaking }"></div>
+        <span v-if="isSpeaking">Anunciando turno...</span>
+        <span v-else-if="voiceAvailable">Módulo de voz listo</span>
+        <span v-else>Voz no disponible en este navegador</span>
+      </div>
+    </div>
+
+    <!-- ── CONTROL PANEL ── -->
+    <div class="control-panel">
+
+      <!-- Action buttons -->
+      <div class="actions-section">
+        <button
+          class="btn-main"
+          :disabled="stats.pendientes === 0 || loading"
+          @click="llamarSiguiente"
+        >
+          <i class="mdi mdi-bullhorn"></i>
+          Llamar Siguiente
+          <span v-if="stats.pendientes > 0" style="background:rgba(255,255,255,.25);padding:2px 8px;border-radius:99px;font-size:.8rem;margin-left:4px">
+            {{ stats.pendientes }}
+          </span>
+        </button>
+
+        <div class="btn-row">
+          <button class="btn-sm btn-repeat" :disabled="!turnoActual || isSpeaking" @click="repetirLlamado">
+            <i class="mdi mdi-repeat"></i> Repetir
+          </button>
+          <button class="btn-sm btn-attend" :disabled="!turnoActual || turnoActual.estado === 'atendido'" @click="marcarAtendido">
+            <i class="mdi mdi-check-circle-outline"></i> Atendido
+          </button>
+          <button class="btn-sm btn-skip" :disabled="!turnoActual" @click="saltarTurno">
+            <i class="mdi mdi-skip-next"></i> Saltar
+          </button>
+          <button class="btn-sm btn-reset" @click="showReset = true">
+            <i class="mdi mdi-restore"></i> Reiniciar
+          </button>
+        </div>
+      </div>
+
+      <!-- Queue list -->
+      <div class="queue-section">
+        <div class="queue-header">
+          <h3>Cola de Turnos</h3>
+          <div class="tab-pills">
+            <button class="tab-pill" :class="{ active: tab === 'pendientes' }" @click="tab = 'pendientes'">
+              Pendientes
+            </button>
+            <button class="tab-pill" :class="{ active: tab === 'todos' }" @click="tab = 'todos'">
+              Todos
+            </button>
+          </div>
+        </div>
+
+        <div class="queue-list">
+          <template v-if="filteredTurnos.length > 0">
+            <div
+              v-for="t in filteredTurnos"
+              :key="t.id"
+              class="queue-item"
+              :class="{
+                'is-called':   t.estado === 'llamado',
+                'is-attended': t.estado === 'atendido',
+                'is-skipped':  t.estado === 'saltado',
+              }"
+            >
+              <div class="q-num">{{ String(t.numero).padStart(3,'0') }}</div>
+              <div class="q-info">
+                <div class="q-name">{{ t.nombre }}</div>
+                <div class="q-service">
+                  <i :class="'mdi ' + servicioIcon(t.servicio)"></i>
+                  {{ t.servicio }}
+                </div>
+              </div>
+              <span class="q-badge" :class="badgeClass(t.estado)">{{ estadoLabel(t.estado) }}</span>
+              <button
+                class="q-call-btn"
+                v-if="t.estado === 'pendiente'"
+                @click="llamarEspecifico(t)"
+                title="Llamar este turno"
+              >
+                <i class="mdi mdi-bullhorn-outline"></i>
+              </button>
+            </div>
+          </template>
+          <div class="queue-empty" v-else>
+            <i class="mdi mdi-check-all"></i>
+            <p>{{ tab === 'pendientes' ? 'No hay turnos pendientes' : 'No hay turnos registrados' }}</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Reset confirm -->
+  <div class="overlay" v-if="showReset" @click.self="showReset = false">
+    <div class="confirm-card">
+      <h3>⚠️ Reiniciar Sistema</h3>
+      <p>Esta acción eliminará <strong>todos los turnos</strong> del sistema. ¿Desea continuar?</p>
+      <div class="confirm-btns">
+        <button class="confirm-cancel" @click="showReset = false">Cancelar</button>
+        <button class="confirm-ok" @click="resetSistema">Reiniciar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" v-if="toast.visible">
+    <i class="mdi" :class="toast.icon"></i>
+    {{ toast.text }}
+  </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+<script>
+const API = 'http://localhost:3000/api';
+
+// ── Voice Module ─────────────────────────────────────────────────────────────
+const Voice = {
+  voices: [],
+  ready: false,
+  init() {
+    if (!('speechSynthesis' in window)) return;
+    const load = () => { this.voices = window.speechSynthesis.getVoices(); this.ready = true; };
+    window.speechSynthesis.addEventListener('voiceschanged', load);
+    load();
+  },
+  spanishVoice() {
+    const pref = ['es-AR', 'es-MX', 'es-CL', 'es-CO', 'es-ES'];
+    for (const lang of pref) {
+      const v = this.voices.find(v => v.lang === lang && v.localService);
+      if (v) return v;
+    }
+    return this.voices.find(v => v.lang.startsWith('es')) || null;
+  },
+  say(text) {
+    return new Promise(resolve => {
+      if (!('speechSynthesis' in window)) return resolve();
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang   = 'es-AR';
+      u.rate   = 0.82;
+      u.pitch  = 1.0;
+      u.volume = 1.0;
+      const v = this.spanishVoice();
+      if (v) u.voice = v;
+      u.onend = u.onerror = resolve;
+      window.speechSynthesis.speak(u);
+    });
+  },
+  async announce(turno, times = 2, onStart, onEnd) {
+    const num  = String(turno.numero).padStart(3, '0');
+    const text = `Turno número ${num}. ${turno.nombre}. Por favor pasar al módulo de ${turno.servicio}.`;
+    onStart && onStart();
+    for (let i = 0; i < times; i++) {
+      await this.say(text);
+      if (i < times - 1) await new Promise(r => setTimeout(r, 700));
+    }
+    onEnd && onEnd();
+  }
+};
+
+// ── Service icons map ────────────────────────────────────────────────────────
+const SERVICE_ICONS = {
+  'Medicina General': 'mdi-stethoscope',
+  'Odontología':      'mdi-tooth-outline',
+  'Farmacia':         'mdi-pill',
+  'Enfermería':       'mdi-needle',
+  'Administración':   'mdi-file-document-outline',
+  'Caja':             'mdi-cash-register',
+};
+
+Vue.createApp({
+  data() {
+    return {
+      clock:        '',
+      turnos:       [],
+      turnoActual:  null,
+      stats:        { total: 0, pendientes: 0, llamados: 0, atendidos: 0, saltados: 0 },
+      tab:          'pendientes',
+      loading:      false,
+      animating:    false,
+      isSpeaking:   false,
+      voiceAvailable: 'speechSynthesis' in window,
+      showReset:    false,
+      toast:        { visible: false, text: '', icon: 'mdi-check-circle' },
+      _toastTimer:  null,
+      _sse:         null,
+    };
+  },
+  computed: {
+    filteredTurnos() {
+      if (this.tab === 'pendientes')
+        return this.turnos.filter(t => t.estado === 'pendiente' || t.estado === 'llamado');
+      return [...this.turnos].reverse();
+    },
+  },
+  mounted() {
+    Voice.init();
+    this.tickClock();
+    this.loadAll();
+    setInterval(this.tickClock, 1000);
+    setInterval(this.loadAll, 6000); // fallback polling
+    this.connectSSE();
+  },
+  beforeUnmount() {
+    if (this._sse) this._sse.close();
+  },
+  methods: {
+    tickClock() {
+      this.clock = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    },
+
+    connectSSE() {
+      try {
+        this._sse = new EventSource(`${API}/events`);
+        this._sse.addEventListener('llamado',   e => { this.loadAll(); });
+        this._sse.addEventListener('nuevo',     e => { this.loadAll(); });
+        this._sse.addEventListener('atendido',  e => { this.loadAll(); });
+        this._sse.addEventListener('saltado',   e => { this.loadAll(); });
+        this._sse.addEventListener('eliminado', e => { this.loadAll(); });
+        this._sse.addEventListener('reset',     e => { this.loadAll(); });
+        this._sse.onerror = () => { /* fallback polling handles it */ };
+      } catch { /* SSE not available */ }
+    },
+
+    async loadAll() {
+      try {
+        const [tRes, sRes] = await Promise.all([
+          fetch(`${API}/turnos`),
+          fetch(`${API}/stats`),
+        ]);
+        this.turnos = await tRes.json();
+        this.stats  = await sRes.json();
+
+        // Keep turnoActual in sync
+        if (this.turnoActual) {
+          const found = this.turnos.find(t => t.id === this.turnoActual.id);
+          if (found) this.turnoActual = found;
+        }
+        // Auto-set turnoActual to last called one if none set
+        if (!this.turnoActual) {
+          const called = [...this.turnos].reverse().find(t => t.estado === 'llamado');
+          if (called) this.turnoActual = called;
+        }
+      } catch {
+        // backend offline – keep stale data
+      }
+    },
+
+    async llamarSiguiente() {
+      if (this.loading) return;
+      this.loading = true;
+      try {
+        const r = await fetch(`${API}/siguiente`, { method: 'POST' });
+        if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
+        const turno = await r.json();
+        this.turnoActual = turno;
+        await this.loadAll();
+        this.triggerAnimation();
+        await Voice.announce(turno, 2,
+          () => this.isSpeaking = true,
+          () => this.isSpeaking = false
+        );
+      } catch (e) {
+        this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    async llamarEspecifico(turno) {
+      try {
+        const r = await fetch(`${API}/turnos/${turno.id}/llamar`, { method: 'POST' });
+        if (!r.ok) throw new Error();
+        this.turnoActual = await r.json();
+        await this.loadAll();
+        this.triggerAnimation();
+        await Voice.announce(this.turnoActual, 2,
+          () => this.isSpeaking = true,
+          () => this.isSpeaking = false
+        );
+      } catch {
+        this.showToast('Error al llamar turno', 'mdi-alert-circle-outline');
+      }
+    },
+
+    repetirLlamado() {
+      if (!this.turnoActual || this.isSpeaking) return;
+      Voice.announce(this.turnoActual, 1,
+        () => this.isSpeaking = true,
+        () => this.isSpeaking = false
+      );
+    },
+
+    async marcarAtendido() {
+      if (!this.turnoActual) return;
+      try {
+        const r = await fetch(`${API}/turnos/${this.turnoActual.id}/atender`, { method: 'POST' });
+        if (!r.ok) throw new Error();
+        this.turnoActual = null;
+        await this.loadAll();
+        this.showToast('Turno marcado como atendido', 'mdi-check-circle');
+      } catch {
+        this.showToast('Error al actualizar turno', 'mdi-alert-circle-outline');
+      }
+    },
+
+    async saltarTurno() {
+      if (!this.turnoActual) return;
+      try {
+        const r = await fetch(`${API}/turnos/${this.turnoActual.id}/saltar`, { method: 'POST' });
+        if (!r.ok) throw new Error();
+        this.turnoActual = null;
+        await this.loadAll();
+        this.showToast('Turno saltado', 'mdi-skip-next');
+      } catch {
+        this.showToast('Error al saltar turno', 'mdi-alert-circle-outline');
+      }
+    },
+
+    async resetSistema() {
+      this.showReset = false;
+      try {
+        await fetch(`${API}/reset`, { method: 'POST' });
+        this.turnoActual = null;
+        window.speechSynthesis?.cancel();
+        await this.loadAll();
+        this.showToast('Sistema reiniciado correctamente', 'mdi-check-circle');
+      } catch {
+        this.showToast('Error al reiniciar', 'mdi-alert-circle-outline');
+      }
+    },
+
+    triggerAnimation() {
+      this.animating = false;
+      this.$nextTick(() => {
+        this.animating = true;
+        setTimeout(() => this.animating = false, 600);
+      });
+    },
+
+    showToast(text, icon = 'mdi-check-circle') {
+      clearTimeout(this._toastTimer);
+      this.toast = { visible: true, text, icon };
+      this._toastTimer = setTimeout(() => this.toast.visible = false, 3000);
+    },
+
+    servicioIcon(s) { return SERVICE_ICONS[s] || 'mdi-medical-bag'; },
+
+    estadoLabel(estado) {
+      const map = { pendiente: 'Esperando', llamado: 'Llamado', atendido: 'Atendido', saltado: 'Saltado' };
+      return map[estado] || estado;
+    },
+    badgeClass(estado) {
+      const map = { pendiente: 'badge-pending', llamado: 'badge-called', atendido: 'badge-attended', saltado: 'badge-skipped' };
+      return map[estado] || '';
+    },
+  }
+}).mount('#app');
+</script>
+</body>
+</html>
