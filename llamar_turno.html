@@ -750,7 +750,7 @@ Vue.createApp({
 
     connectSSE() {
       try {
-        this._sse = new EventSource(`${API}/events`);
+        this._sse = new EventSource(`https://backend-turnos-1-87ag.onrender.com/api/events`);
         this._sse.addEventListener('llamado',   e => { this.loadAll(); });
         this._sse.addEventListener('nuevo',     e => { this.loadAll(); });
         this._sse.addEventListener('atendido',  e => { this.loadAll(); });
