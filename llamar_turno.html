@@ -765,7 +765,7 @@ Vue.createApp({
       try {
         const [tRes, sRes] = await Promise.all([
           fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos`),
-          fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/stats`),
+          fetch(`https://backend-turnos-1-87ag.onrender.com/api/stats`),
         ]);
         this.turnos = await tRes.json();
         this.stats  = await sRes.json();
@@ -859,7 +859,7 @@ Vue.createApp({
     async resetSistema() {
       this.showReset = false;
       try {
-        await fetch(`https://backend-turnos-1-87ag.onrender.com/reset`, { method: 'POST' });
+        await fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/reset`, { method: 'POST' });
         this.turnoActual = null;
         window.speechSynthesis?.cancel();
         await this.loadAll();
