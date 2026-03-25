@@ -789,7 +789,7 @@ Vue.createApp({
       if (this.loading) return;
       this.loading = true;
       try {
-        const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/siguiente`, { method: 'POST' });
+        const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/api/siguiente`, { method: 'POST' });
         if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
         const turno = await r.json();
         this.turnoActual = turno;
@@ -859,7 +859,7 @@ Vue.createApp({
     async resetSistema() {
       this.showReset = false;
       try {
-        await fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/reset`, { method: 'POST' });
+        await fetch(`https://backend-turnos-1-87ag.onrender.com/api/reset`, { method: 'POST' });
         this.turnoActual = null;
         window.speechSynthesis?.cancel();
         await this.loadAll();
