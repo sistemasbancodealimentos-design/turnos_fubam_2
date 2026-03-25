@@ -764,8 +764,8 @@ Vue.createApp({
     async loadAll() {
       try {
         const [tRes, sRes] = await Promise.all([
-          fetch(`${API}/turnos`),
-          fetch(`${API}/stats`),
+          fetch(`https://backend-turnos-1-87ag.onrender.com`),
+          fetch(`https://backend-turnos-1-87ag.onrender.com/stats`),
         ]);
         this.turnos = await tRes.json();
         this.stats  = await sRes.json();
@@ -789,7 +789,7 @@ Vue.createApp({
       if (this.loading) return;
       this.loading = true;
       try {
-        const r = await fetch(`${API}/siguiente`, { method: 'POST' });
+        const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/siguiente`, { method: 'POST' });
         if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
         const turno = await r.json();
         this.turnoActual = turno;
@@ -808,7 +808,7 @@ Vue.createApp({
 
     async llamarEspecifico(turno) {
       try {
-        const r = await fetch(`${API}/turnos/${turno.id}/llamar`, { method: 'POST' });
+        const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/turnos/${turno.id}/llamar`, { method: 'POST' });
         if (!r.ok) throw new Error();
         this.turnoActual = await r.json();
         await this.loadAll();
@@ -833,7 +833,7 @@ Vue.createApp({
     async marcarAtendido() {
       if (!this.turnoActual) return;
       try {
-        const r = await fetch(`${API}/turnos/${this.turnoActual.id}/atender`, { method: 'POST' });
+        const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/turnos/${this.turnoActual.id}/atender`, { method: 'POST' });
         if (!r.ok) throw new Error();
         this.turnoActual = null;
         await this.loadAll();
@@ -846,7 +846,7 @@ Vue.createApp({
     async saltarTurno() {
       if (!this.turnoActual) return;
       try {
-        const r = await fetch(`${API}/turnos/${this.turnoActual.id}/saltar`, { method: 'POST' });
+        const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/turnos/${this.turnoActual.id}/saltar`, { method: 'POST' });
         if (!r.ok) throw new Error();
         this.turnoActual = null;
         await this.loadAll();
@@ -859,7 +859,7 @@ Vue.createApp({
     async resetSistema() {
       this.showReset = false;
       try {
-        await fetch(`${API}/reset`, { method: 'POST' });
+        await fetch(`https://backend-turnos-1-87ag.onrender.com/reset`, { method: 'POST' });
         this.turnoActual = null;
         window.speechSynthesis?.cancel();
         await this.loadAll();
