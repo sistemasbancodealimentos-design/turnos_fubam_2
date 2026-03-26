@@ -652,6 +652,14 @@
 <script>
 const API = 'https://backend-turnos-1-87ag.onrender.com/api';
 
+
+//-- Icons Services -----------------------------------------------------------
+const SERVICE_ICONS = {
+  'Recoger Alimentos': 'mdi-cart-outline',
+  'Buen Samaritano': 'mdi-heart-outline',
+};
+
+
 // ── Voice Module ─────────────────────────────────────────────────────────────
 const Voice = {
   voices: [],
@@ -741,7 +749,7 @@ Vue.createApp({
 
     connectSSE() {
       try {
-          this._sse = new EventSource(`${API}/events`);
+          this._sse = new EventSource(`${API}/api/events`);
 
           this._sse.addEventListener('llamado', async (e) => {
           const turno = JSON.parse(e.data);
@@ -881,6 +889,8 @@ Vue.createApp({
       this.toast = { visible: true, text, icon };
       this._toastTimer = setTimeout(() => this.toast.visible = false, 3000);
     },
+
+    servicioIcon(s) { return SERVICE_ICONS[s] || 'mdi-cart-outline'; },
 
     estadoLabel(estado) {
       const map = { pendiente: 'Esperando', llamado: 'Llamado', atendido: 'Atendido', saltado: 'Saltado' };

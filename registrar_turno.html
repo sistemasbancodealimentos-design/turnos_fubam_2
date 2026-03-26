@@ -393,7 +393,7 @@ const API = 'https://backend-turnos-1-87ag.onrender.com/api';
 
 const SERVICIOS = [
   { value: 'Recoger Alimentos',  label: 'Recoger Alimentos',  icon: 'mdi-cart-outline' },
-  { value: 'Buen Samaritanbo', label: 'Buen Samaritanbo', icon: 'mdi-heart-outline' },
+  { value: 'Buen Samaritano', label: 'Buen Samaritano', icon: 'mdi-heart-outline' },
 ];
 
 Vue.createApp({
@@ -461,7 +461,7 @@ Vue.createApp({
     imprimir() { window.print(); },
     servicioIcon(s) {
       const found = SERVICIOS.find(x => x.value === s);
-      return found ? found.icon : 'mdi-medical-bag';
+      return found ? found.icon : 'mdi-cart-outline';
     },
   }
 }).mount('#app');
