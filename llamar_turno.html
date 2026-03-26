@@ -741,7 +741,7 @@ Vue.createApp({
 
     connectSSE() {
       try {
-          this._sse = new EventSource(`https://backend-turnos-1-87ag.onrender.com/api/events`);
+          this._sse = new EventSource(`${API}/api/events`);
 
           this._sse.addEventListener('llamado', async (e) => {
           const turno = JSON.parse(e.data);
