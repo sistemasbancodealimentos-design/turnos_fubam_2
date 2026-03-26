@@ -741,7 +741,7 @@ Vue.createApp({
 
     connectSSE() {
       try {
-          this._sse = new EventSource(`${API}/api/events`);
+          this._sse = new EventSource(`${API}/events`);
 
           this._sse.addEventListener('llamado', async (e) => {
           const turno = JSON.parse(e.data);
@@ -881,8 +881,6 @@ Vue.createApp({
       this.toast = { visible: true, text, icon };
       this._toastTimer = setTimeout(() => this.toast.visible = false, 3000);
     },
-
-    servicioIcon(s) { return SERVICE_ICONS[s] || 'mdi-medical-bag'; },
 
     estadoLabel(estado) {
       const map = { pendiente: 'Esperando', llamado: 'Llamado', atendido: 'Atendido', saltado: 'Saltado' };
