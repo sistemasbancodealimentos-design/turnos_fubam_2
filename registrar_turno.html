@@ -306,7 +306,7 @@
           class="custom-input"
           :class="{ 'error-border': errors.nombre }"
           v-model="form.nombre"
-          placeholder="Ej: Juan Pérez"
+          placeholder="Nombre Parroquia"
           @input="errors.nombre = ''"
           maxlength="80"
         />
@@ -333,7 +333,7 @@
         <input
           class="custom-input"
           v-model="form.documento"
-          placeholder="DNI / CUIL"
+          placeholder="NIT / CEDULA"
           maxlength="20"
         />
 
@@ -392,8 +392,8 @@
 const API = 'https://backend-turnos-1-87ag.onrender.com/api';
 
 const SERVICIOS = [
-  { value: 'Recoger Alimentos',  label: 'Recoger Alimentos',  icon: 'mdi-cart-outline' },
-  { value: 'Buen Samaritano', label: 'Buen Samaritano', icon: 'mdi-heart-outline' },
+  { value: 'Despacho Institucional',  label: 'Despacho Institucional',  icon: 'mdi-cart-outline' },
+  { value: 'Recoger Refrigerios', label: 'Recoger Refrigerios', icon: 'mdi-food-outline' },
 ];
 
 Vue.createApp({
