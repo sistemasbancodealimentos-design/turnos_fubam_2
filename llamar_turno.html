@@ -515,6 +515,7 @@
             {{ String(turnoActual.numero).padStart(3, '0') }}
           </div>
           <div class="display-name">{{ turnoActual.nombre }}</div>
+          <div class="display-name">{{ turnoActual.documento}}</div>
           <div style="margin-top:10px">
             <span class="display-service">
               <i :class="'mdi ' + servicioIcon(turnoActual.servicio)"></i>
@@ -602,7 +603,6 @@
               <div class="q-num">{{ String(t.numero).padStart(3,'0') }}</div>
               <div class="q-info">
                 <div class="q-name">{{ t.nombre }}</div>
-                <div class="q-name">{{ t.documento }}</div>
                 <div class="q-service">
                   <i :class="'mdi ' + servicioIcon(t.servicio)"></i>
                   {{ t.servicio }}
