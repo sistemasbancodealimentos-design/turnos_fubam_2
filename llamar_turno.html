@@ -696,7 +696,7 @@ const Voice = {
   },
   async announce(turno, times = 2, onStart, onEnd) {
     const num  = String(turno.numero).padStart(3, '0');
-    const text = `Turno número ${num}. ${turno.nombre}. Por favor pasar al módulo de ${turno.servicio}.`;
+    const text = `Turno número ${num}. ${turno.nombre}. ${turno.documento}. Por favor pasar al módulo de ${turno.servicio}.`;
     onStart && onStart();
     for (let i = 0; i < times; i++) {
       await this.say(text);
