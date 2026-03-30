@@ -515,6 +515,7 @@
             {{ String(turnoActual.numero).padStart(3, '0') }}
           </div>
           <div class="display-name">{{ turnoActual.nombre }}</div>
+          <div class="display-name">{{ turnoActual.institucion}}</div>
           <div class="display-name">{{ turnoActual.documento}}</div>
           <div style="margin-top:10px">
             <span class="display-service">
@@ -603,6 +604,7 @@
               <div class="q-num">{{ String(t.numero).padStart(3,'0') }}</div>
               <div class="q-info">
                 <div class="q-name">{{ t.nombre }}</div>
+                <div class="q-name">{{ t.institucion }}</div>
                 <div class="q-service">
                   <i :class="'mdi ' + servicioIcon(t.servicio)"></i>
                   {{ t.servicio }}
@@ -658,6 +660,7 @@ const API = 'https://backend-turnos-1-87ag.onrender.com/api';
 const SERVICE_ICONS = {
   'Despacho Institucional': 'mdi-cart-outline',
   'Recoger Refrigerios': 'mdi-food-outline',
+  'Otros': 'mdi-bottle-soda-outline'
 };
 
 
@@ -696,7 +699,7 @@ const Voice = {
   },
   async announce(turno, times = 2, onStart, onEnd) {
     const num  = String(turno.numero).padStart(3, '0');
-    const text = `Turno número ${num}. ${turno.nombre}. ${turno.documento}. Por favor pasar al módulo de ${turno.servicio}.`;
+    const text = `Turno número ${num}. ${turno.nombre}. ${turno.institucion}.  ${turno.documento}. Por favor pasar al módulo de ${turno.servicio}.`;
     onStart && onStart();
     for (let i = 0; i < times; i++) {
       await this.say(text);

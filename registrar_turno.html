@@ -300,17 +300,29 @@
           {{ stats.pendientes }} persona{{ stats.pendientes !== 1 ? 's' : '' }} esperando actualmente
         </div>
 
-        <!-- Nombre -->
-        <div class="field-label">Nombre completo *</div>
+        <!--Nombre Representante-->
+        <div class="field-label">Nombre Representante *</div>
         <input
           class="custom-input"
           :class="{ 'error-border': errors.nombre }"
           v-model="form.nombre"
-          placeholder="Nombre Parroquia"
+          placeholder="Nombre Representante"
           @input="errors.nombre = ''"
           maxlength="80"
         />
         <div class="error-msg" v-if="errors.nombre"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.nombre }}</div>
+
+        <!-- Nombre Institucion -->
+        <div class="field-label">Nombre Institución *</div>
+        <input
+          class="custom-input"
+          :class="{ 'error-border': errors.institucion }"
+          v-model="form.institucion"
+          placeholder="Nombre Parroquia / Institución"
+          @input="errors.institucion = ''"
+          maxlength="80"
+        />
+        <div class="error-msg" v-if="errors.nombre"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.institucion }}</div>
 
         <!-- Servicio -->
         <div class="field-label" style="margin-bottom:10px">Servicio *</div>
@@ -362,6 +374,7 @@
         <div class="turn-label">Su número de turno</div>
         <div class="turn-number">{{ turnoActual.numero.toString().padStart(3, '0') }}</div>
         <div class="turn-name">{{ turnoActual.nombre }}</div>
+        <div class="turn-name">{{ turnoActual.institucion}}</div>
         <div>
           <span class="turn-service">
             <i :class="'mdi ' + servicioIcon(turnoActual.servicio)"></i>
@@ -394,14 +407,15 @@ const API = 'https://backend-turnos-1-87ag.onrender.com/api';
 const SERVICIOS = [
   { value: 'Despacho Institucional',  label: 'Despacho Institucional',  icon: 'mdi-cart-outline' },
   { value: 'Recoger Refrigerios', label: 'Recoger Refrigerios', icon: 'mdi-food-outline' },
+  { value: 'Otros', label: 'Otros', icon: 'mdi-bottle-soda-outline'}
 ];
 
 Vue.createApp({
   data() {
     return {
       clock:          '',
-      form:           { nombre: '', servicio: '', documento: '' },
-      errors:         { nombre: '', servicio: '' },
+      form:           { nombre: '', institucion: '', documento: '',  servicio: '' },
+      errors:         { nombre: '', institucion: '', servicio: '' },
       apiError:       '',
       loading:        false,
       turnoRegistrado: false,
@@ -428,7 +442,8 @@ Vue.createApp({
     },
     validate() {
       let ok = true;
-      if (!this.form.nombre.trim()) { this.errors.nombre  = 'El nombre es obligatorio.'; ok = false; }
+      if (!this.form.nombre.trim()) { this.errors.institucion  = 'El nombre del representante es obligatorio.'; ok = false; }
+      if (!this.form.institucion.trim()) { this.errors.institucion  = 'El nombrde la institucion es obligatorio.'; ok = false; }
       if (!this.form.servicio)      { this.errors.servicio = 'Seleccione un servicio.';   ok = false; }
       return ok;
     },
@@ -453,8 +468,8 @@ Vue.createApp({
       }
     },
     nuevoTurno() {
-      this.form           = { nombre: '', servicio: '', documento: '' };
-      this.errors         = { nombre: '', servicio: '' };
+      this.form           = { nombre: '', institucion: '', documento: '', servicio: '',  };
+      this.errors         = { nombre: '', institucion: '', servicio: '' };
       this.turnoRegistrado = false;
       this.turnoActual    = null;
     },
