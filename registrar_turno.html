@@ -300,18 +300,6 @@
           {{ stats.pendientes }} persona{{ stats.pendientes !== 1 ? 's' : '' }} esperando actualmente
         </div>
 
-        <!--Nombre Representante-->
-        <div class="field-label">Nombre Representante *</div>
-        <input
-          class="custom-input"
-          :class="{ 'error-border': errors.nombre }"
-          v-model="form.nombre"
-          placeholder="Nombre Representante"
-          @input="errors.nombre = ''"
-          maxlength="80"
-        />
-        <div class="error-msg" v-if="errors.nombre"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.nombre }}</div>
-
         <!-- Nombre Institucion -->
         <div class="field-label">Nombre Institución *</div>
         <input
@@ -323,6 +311,18 @@
           maxlength="80"
         />
         <div class="error-msg" v-if="errors.nombre"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.institucion }}</div>
+
+         <!--Nombre Representante-->
+         <div class="field-label">Nombre Representante *</div>
+         <input
+           class="custom-input"
+           :class="{ 'error-border': errors.nombre }"
+           v-model="form.nombre"
+           placeholder="Nombre Representante"
+           @input="errors.nombre = ''"
+           maxlength="80"
+         />
+         <div class="error-msg" v-if="errors.nombre"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.nombre }}</div>
 
         <!-- Servicio -->
         <div class="field-label" style="margin-bottom:10px">Servicio *</div>
@@ -373,8 +373,8 @@
         </div>
         <div class="turn-label">Su número de turno</div>
         <div class="turn-number">{{ turnoActual.numero.toString().padStart(3, '0') }}</div>
-        <div class="turn-name">{{ turnoActual.nombre }}</div>
         <div class="turn-name">{{ turnoActual.institucion}}</div>
+        <div class="turn-name">{{ turnoActual.nombre }}</div>
         <div>
           <span class="turn-service">
             <i :class="'mdi ' + servicioIcon(turnoActual.servicio)"></i>

@@ -479,11 +479,11 @@
           <div class="turno-numero" :class="{ animate: animating }">
             {{ String(turnoActual.numero).padStart(3, '0') }}
           </div>
-          <div class="turno-nombre" :class="{ animate: animating }">
-            {{ turnoActual.nombre }}
-          </div>
           <div class="turno-institucion" :class="{ animate: animating }">
             {{ turnoActual.institucion }}
+          </div>
+          <div class="turno-nombre" :class="{ animate: animating }">
+            {{ turnoActual.nombre }}
           </div>
           <div class="turno-documento" :class="{ animate: animating }">
             {{ turnoActual.documento }}
