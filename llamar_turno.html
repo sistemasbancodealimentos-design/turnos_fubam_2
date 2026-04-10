@@ -1063,22 +1063,21 @@
 
     /* Btn report in actions */
     .btn-report {
-      width: 100%;
+      width: auto;
       font-family: 'Outfit', sans-serif;
-      font-size: .88rem;
+      font-size: .85rem;
       font-weight: 600;
       color: var(--blue);
       border: 2px solid var(--border);
       border-radius: 12px;
-      padding: 10px 16px;
+      padding: 10px 12px;
       cursor: pointer;
       background: none;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 8px;
       transition: all .2s;
-      margin-top: 10px;
     }
 
     .btn-report:hover {
@@ -1361,16 +1360,12 @@
             <button class="btn-sm btn-skip" :disabled="!turnoActual" @click="saltarTurno">
               <i class="mdi mdi-skip-next"></i> Saltar
             </button>
-            <button class="btn-sm btn-reset" @click="showReset = true">
-              <i class="mdi mdi-restore"></i> Reiniciar
+            <button class="btn-report" @click="abrirInforme">
+              <i class="mdi mdi-chart-box-outline"></i>
+              Informe del Día
+              <span class="count-badge" v-if="stats.atendidos > 0">{{ stats.atendidos }}</span>
             </button>
           </div>
-
-          <button class="btn-report" @click="abrirInforme">
-            <i class="mdi mdi-chart-box-outline"></i>
-            Informe del Día
-            <span class="count-badge" v-if="stats.atendidos > 0">{{ stats.atendidos }}</span>
-          </button>
 
         </div>
 
@@ -1418,18 +1413,6 @@
           </div>
         </div>
 
-      </div>
-    </div>
-
-    <!-- Reset confirm -->
-    <div class="overlay" v-if="showReset" @click.self="showReset = false">
-      <div class="confirm-card">
-        <h3>⚠️ Reiniciar Sistema</h3>
-        <p>Esta acción eliminará <strong>todos los turnos</strong> del sistema. ¿Desea continuar?</p>
-        <div class="confirm-btns">
-          <button class="confirm-cancel" @click="showReset = false">Cancelar</button>
-          <button class="confirm-ok" @click="resetSistema">Reiniciar</button>
-        </div>
       </div>
     </div>
 
@@ -1487,7 +1470,7 @@
                   <th>Institución</th>
                   <th>Documento</th>
                   <th>Servicio</th>
-                  <th>Hora Llamado</th>
+                  <th>Creado</th>
                   <th>Hora Atendido</th>
                   <th>Estado</th>
                 </tr>
@@ -1505,10 +1488,10 @@
                     </span>
                   </td>
                   <td style="font-size:.82rem;color:var(--muted);white-space:nowrap">
-                    {{ fmtDateTime(turnoTimestamps[t.id]?.llamado) }}
+                    {{ fmtDateTime(t.creadoEn) }}
                   </td>
                   <td style="font-size:.82rem;color:var(--muted);white-space:nowrap">
-                    {{ fmtDateTime(turnoTimestamps[t.id]?.atendido) }}
+                    {{ fmtDateTime(t.atendidoEn) }}
                   </td>
                   <td>
                     <span class="r-badge" :class="t.estado">{{ estadoLabel(t.estado) }}</span>
@@ -1552,7 +1535,7 @@
                 <th>Institución</th>
                 <th>Documento</th>
                 <th>Servicio</th>
-                <th>Hora Llamado</th>
+                <th>Creado</th>
                 <th>Hora Atendido</th>
                 <th>Estado</th>
               </tr>
@@ -1564,8 +1547,8 @@
                 <td>{{ t.institucion }}</td>
                 <td>{{ t.documento || '—' }}</td>
                 <td>{{ t.servicio }}</td>
-                <td>{{ fmtDateTime(turnoTimestamps[t.id]?.llamado) }}</td>
-                <td>{{ fmtDateTime(turnoTimestamps[t.id]?.atendido) }}</td>
+                <td>{{ fmtDateTime(t.creadoEn) }}</td>
+                <td>{{ fmtDateTime(t.atendidoEn) }}</td>
                 <td>{{ estadoLabel(t.estado) }}</td>
               </tr>
             </tbody>
@@ -1649,7 +1632,6 @@
           animating: false,
           isSpeaking: false,
           voiceAvailable: 'speechSynthesis' in window,
-          showReset: false,
           showReport: false,
           reportFecha: '',
           turnoTimestamps: JSON.parse(localStorage.getItem('fubam_timestamps') || '{}'),
@@ -1705,7 +1687,6 @@
             this._sse.addEventListener('atendido', () => this.loadAll());
             this._sse.addEventListener('saltado', () => this.loadAll());
             this._sse.addEventListener('eliminado', () => this.loadAll());
-            this._sse.addEventListener('reset', () => this.loadAll());
             this._sse.onerror = () => { /* fallback polling handles it */ };
           } catch { /* SSE not available */ }
         },
@@ -1809,21 +1790,6 @@
           }
         },
 
-        async resetSistema() {
-          this.showReset = false;
-          try {
-            await fetch(`https://backend-turnos-1-87ag.onrender.com/api/reset`, { method: 'POST' });
-            this.turnoActual = null;
-            this.turnoTimestamps = {};
-            localStorage.removeItem('fubam_timestamps');
-            window.speechSynthesis?.cancel();
-            await this.loadAll();
-            this.showToast('Sistema reiniciado correctamente', 'mdi-check-circle');
-          } catch {
-            this.showToast('Error al reiniciar', 'mdi-alert-circle-outline');
-          }
-        },
-
         triggerAnimation() {
           this.animating = false;
           this.$nextTick(() => {
@@ -1847,7 +1813,8 @@
             month: '2-digit',
             day: '2-digit',
             hour: '2-digit',
-            minute: '2-digit'
+            minute: '2-digit',
+            hour12: true
           });
           this.showReport = true;
         },
@@ -1892,7 +1859,8 @@
             day: '2-digit',
             hour: '2-digit',
             minute: '2-digit',
-            second: '2-digit'
+            second: '2-digit',
+            hour12: true
           });
         },
 

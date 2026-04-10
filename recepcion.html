@@ -724,13 +724,6 @@ Vue.createApp({
         this._sse.addEventListener('saltado',   () => this.loadAll());
         this._sse.addEventListener('nuevo',     () => this.loadAll());
         this._sse.addEventListener('eliminado', () => this.loadAll());
-
-        this._sse.addEventListener('reset', () => {
-          this.turnoActual = null;
-          this.historial   = [];
-          this.loadAll();
-        });
-
         this._sse.onerror = () => {
           this.connStatus = 'offline';
           // El polling de respaldo sigue corriendo cada 8s
