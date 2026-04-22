@@ -1739,7 +1739,7 @@
           if (this.loading) return;
           this.loading = true;
           try {
-            const r = await fetch(`https://backend-turnos-3.onrender.com/api/siguiente`, { method: 'POST' });
+            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/siguiente`, { method: 'POST' });
             if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
             const turno = await r.json();
             this.turnoActual = turno;
