@@ -1563,7 +1563,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <script>
-    const API = 'https://backend-turnos-3.onrender.com/api';
+    const API = 'https://backend-turnos-3.onrender.com/api/turnos';
 
 
     //-- Icons Services -----------------------------------------------------------
@@ -1668,6 +1668,26 @@
       methods: {
         tickClock() {
           this.clock = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        },
+
+        initSSE() {
+          try {
+            // Conexión al flujo de eventos del servidor en Render
+            this._sse = new EventSource('https://backend-turnos-3.onrender.com/events');
+
+            this._sse.onopen = () => { console.log("Conectado al servidor de eventos"); };
+
+            // Escuchar cualquier mensaje para recargar la lista de gestión
+            this._sse.onmessage = (e) => {
+              this.loadAll();
+            };
+
+            this._sse.onerror = () => {
+              console.error("Error en la conexión de eventos. Reintentando...");
+            };
+          } catch (err) {
+            console.error("No se pudo iniciar SSE:", err);
+          }
         },
 
         connectSSE() {
