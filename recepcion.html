@@ -858,7 +858,6 @@
           this.clock = new Date().toLocaleTimeString('es-CO', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
         },
 
-        // Actualiza la función loadAll para usar la URL completa
         async loadAll() {
           try {
             const [tRes, sRes] = await Promise.all([
@@ -868,7 +867,7 @@
             const data = await tRes.json();
             this.stats = await sRes.json();
 
-            // historial: turnos llamados/atendidos/saltados, más reciente primero
+            // Historial: llamados/atendidos/saltados, más reciente primero
             this.historial = [...data]
               .filter(t => t.estado === 'llamado' || t.estado === 'atendido' || t.estado === 'saltado')
               .reverse()
@@ -876,9 +875,9 @@
 
             // turnoActual: el más reciente en estado 'llamado'
             const llamado = [...data].reverse().find(t => t.estado === 'llamado');
-            if (llamado) this.turnoActual = llamado;
-            else if (!this.turnoActual) this.turnoActual = null;
-
+            if (llamado) {
+              this.turnoActual = llamado;
+            }
             this.connStatus = 'online';
           } catch (e) {
             console.error("Error al cargar lista:", e);
@@ -889,7 +888,7 @@
         // Actualiza la función initSSE
         initSSE() {
           try {
-            this._sse = new EventSource('https://backend-turnos-3.onrender.com/events');
+            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
 
             // Escucha específicamente el evento 'llamado' para anunciar por voz
             this._sse.addEventListener('llamado', async (e) => {

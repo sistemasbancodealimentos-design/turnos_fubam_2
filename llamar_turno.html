@@ -1385,7 +1385,7 @@
 
           <div class="queue-list">
             <template v-if="filteredTurnos.length > 0">
-              <div v-for="t in filteredTurnos" :key="t.id" class="queue-item" :class="{
+              <div v-for="t in filteredTurnos" :key="t._id" class="queue-item" :class="{
                 'is-called':   t.estado === 'llamado',
                 'is-attended': t.estado === 'atendido',
                 'is-skipped':  t.estado === 'saltado',
@@ -1476,7 +1476,7 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="t in turnosAtendidos" :key="t.id">
+                <tr v-for="t in turnosAtendidos" :key="t._id">
                   <td class="num">{{ String(t.numero).padStart(3,'0') }}</td>
                   <td>{{ t.nombre }}</td>
                   <td>{{ t.institucion }}</td>
@@ -1541,7 +1541,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="t in turnosAtendidos" :key="'p'+t.id">
+              <tr v-for="t in turnosAtendidos" :key="'p'+t._id">
                 <td>{{ String(t.numero).padStart(3,'0') }}</td>
                 <td>{{ t.nombre }}</td>
                 <td>{{ t.institucion }}</td>
@@ -1673,7 +1673,7 @@
         initSSE() {
           try {
             // Conexión al flujo de eventos del servidor en Render
-            this._sse = new EventSource('https://backend-turnos-3.onrender.com/events');
+            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
 
             this._sse.onopen = () => { console.log("Conectado al servidor de eventos"); };
 
@@ -1739,7 +1739,7 @@
           if (this.loading) return;
           this.loading = true;
           try {
-            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/siguiente`, { method: 'POST' });
+            const r = await fetch(`https://backend-turnos-3.onrender.com/api/siguiente`, { method: 'POST' });
             if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
             const turno = await r.json();
             this.turnoActual = turno;
