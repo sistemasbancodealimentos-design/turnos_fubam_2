@@ -740,7 +740,7 @@
         <!-- Historial list -->
         <div class="historial-list">
           <template v-if="historial.length > 0">
-            <div v-for="(t, i) in historial" :key="t.id" class="hist-item">
+            <div v-for="(t, i) in historial" :key="t._id" class="hist-item">
               <div class="h-num">{{ String(t.numero).padStart(3,'0') }}</div>
               <div class="h-info">
                 <div class="h-name">{{ t.nombre }}</div>
@@ -861,12 +861,28 @@
         // Actualiza la función loadAll para usar la URL completa
         async loadAll() {
           try {
-            const r = await fetch('https://backend-turnos-3.onrender.com/api/turnos');
-            const data = await r.json();
-            // Filtra para mostrar solo los que están en espera o llamados
-            this.turnos = data.filter(t => t.estado === 'pendiente' || t.estado === 'llamado');
+            const [tRes, sRes] = await Promise.all([
+              fetch('https://backend-turnos-3.onrender.com/api/turnos'),
+              fetch('https://backend-turnos-3.onrender.com/api/stats'),
+            ]);
+            const data = await tRes.json();
+            this.stats = await sRes.json();
+
+            // historial: turnos llamados/atendidos/saltados, más reciente primero
+            this.historial = [...data]
+              .filter(t => t.estado === 'llamado' || t.estado === 'atendido' || t.estado === 'saltado')
+              .reverse()
+              .slice(0, 10);
+
+            // turnoActual: el más reciente en estado 'llamado'
+            const llamado = [...data].reverse().find(t => t.estado === 'llamado');
+            if (llamado) this.turnoActual = llamado;
+            else if (!this.turnoActual) this.turnoActual = null;
+
+            this.connStatus = 'online';
           } catch (e) {
             console.error("Error al cargar lista:", e);
+            this.connStatus = 'offline';
           }
         },
 
@@ -901,7 +917,7 @@
 
         connectSSE() {
           try {
-            this._sse = new EventSource(`${API}/api/events`);
+            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
 
             this._sse.onopen = () => { this.connStatus = 'online'; };
 
