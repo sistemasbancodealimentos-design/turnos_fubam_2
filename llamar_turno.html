@@ -1563,7 +1563,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <script>
-    const API = 'https://backend-turnos-1-87ag.onrender.com/api';
+    const API = 'https://backend-turnos-3.onrender.com/api';
 
 
     //-- Icons Services -----------------------------------------------------------
@@ -1694,8 +1694,8 @@
         async loadAll() {
           try {
             const [tRes, sRes] = await Promise.all([
-              fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos`),
-              fetch(`https://backend-turnos-1-87ag.onrender.com/api/stats`),
+              fetch(`https://backend-turnos-3.onrender.com/api/turnos`),
+              fetch(`https://backend-turnos-3.onrender.com/api/stats`),
             ]);
             this.turnos = await tRes.json();
             this.stats = await sRes.json();
@@ -1719,7 +1719,7 @@
           if (this.loading) return;
           this.loading = true;
           try {
-            const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/api/siguiente`, { method: 'POST' });
+            const r = await fetch(`https://backend-turnos-3.onrender.com/api/siguiente`, { method: 'POST' });
             if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
             const turno = await r.json();
             this.turnoActual = turno;
@@ -1739,7 +1739,7 @@
 
         async llamarEspecifico(turno) {
           try {
-            const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/${turno.id}/llamar`, { method: 'POST' });
+            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/${turno.id}/llamar`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.turnoActual = await r.json();
             this.registrarLlamado(this.turnoActual.id);
@@ -1765,7 +1765,7 @@
         async marcarAtendido() {
           if (!this.turnoActual) return;
           try {
-            const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/${this.turnoActual.id}/atender`, { method: 'POST' });
+            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/${this.turnoActual.id}/atender`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.registrarAtendido(this.turnoActual.id);
             this.turnoActual = null;
@@ -1779,7 +1779,7 @@
         async saltarTurno() {
           if (!this.turnoActual) return;
           try {
-            const r = await fetch(`https://backend-turnos-1-87ag.onrender.com/api/turnos/${this.turnoActual.id}/saltar`, { method: 'POST' });
+            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/${this.turnoActual.id}/saltar`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.registrarAtendido(this.turnoActual.id);
             this.turnoActual = null;
