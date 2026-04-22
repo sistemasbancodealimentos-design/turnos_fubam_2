@@ -436,7 +436,7 @@ Vue.createApp({
     },
     async loadStats() {
       try {
-        const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos`);
+        const r = await fetch(`https://backend-turnos-3.onrender.com/api/stats`);
         this.stats = await r.json();
       } catch { /* backend offline */ }
     },
