@@ -1504,8 +1504,9 @@
         <!-- Tabla de turnos o instituciones -->
         <div class="report-body">
           <!-- TABLA DE TURNOS (Día y Rango) -->
-          <template v-if="(reportType === 'dia' || reportType === 'rango') && reportData">
-            <template v-if="turnosParaMostrar().length > 0">
+          <template v-if="(reportType === 'dia' || reportType === 'rango')">
+            <!-- Con datos del reporte -->
+            <template v-if="reportData && turnosParaMostrar().length > 0">
               <table class="report-table">
                 <thead>
                   <tr>
@@ -1950,8 +1951,15 @@
             minute: '2-digit',
             hour12: true
           });
+          // Reset del reporte
+          this.reportType = 'dia';
+          this.reportFechaFrom = new Date().toISOString().split('T')[0];
+          this.reportFechaTo = new Date().toISOString().split('T')[0];
+          this.reportMes = new Date().toISOString().split('T')[0].slice(0, 7);
+          this.reportData = null;
           this.showReport = true;
-          this.cargarReporte();
+          // Cargar datos automáticamente
+          setTimeout(() => this.cargarReporte(), 100);
         },
 
         async cargarReporte() {
@@ -1966,21 +1974,19 @@
               url = `${API_BASE}/api/reportes/mes?mes=${this.reportMes}`;
             }
 
+            console.log('Cargando reporte:', url);
             const resp = await fetch(url);
-            if (!resp.ok) throw new Error('Error al obtener reporte');
+            if (!resp.ok) {
+              const errMsg = await resp.text();
+              throw new Error(`Error ${resp.status}: ${errMsg}`);
+            }
             
-            this.reportData = await resp.json();
-            this.reportFecha = new Date().toLocaleString('es-CO', {
-              weekday: 'long',
-              year: 'numeric',
-              month: '2-digit',
-              day: '2-digit',
-              hour: '2-digit',
-              minute: '2-digit',
-              hour12: true
-            });
+            const data = await resp.json();
+            console.log('Reporte cargado:', data);
+            this.reportData = data;
           } catch (e) {
-            this.showToast('Error al cargar el reporte', 'mdi-alert-circle');
+            console.error('Error al cargar reporte:', e);
+            this.showToast('Error al cargar el reporte: ' + e.message, 'mdi-alert-circle');
           } finally {
             this.reportCargando = false;
           }
