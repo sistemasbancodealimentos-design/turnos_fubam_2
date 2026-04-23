@@ -1426,10 +1426,10 @@
     <div class="report-overlay" v-if="showReport" @click.self="showReport = false">
       <div class="report-modal">
 
-        <!-- Header -->
+        <!-- Header con Filtros -->
         <div class="report-header">
           <div>
-            <h2><i class="mdi mdi-chart-box-outline"></i> Informe de Atención del Día</h2>
+            <h2><i class="mdi mdi-chart-box-outline"></i> Informe de Turnos</h2>
             <div class="report-date">
               Generado el {{ reportFecha }} · FUBAM – Sistema de Turnos
             </div>
@@ -1439,31 +1439,181 @@
           </button>
         </div>
 
+        <!-- Filtros -->
+        <div style="padding: 16px 24px; background: #f9fbfd; border-bottom: 1px solid rgba(0,95,166,.15); display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+          <div>
+            <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Tipo de Reporte</label>
+            <select v-model="reportType" @change="reportFechaTo = reportFechaFrom; cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; cursor: pointer;">
+              <option value="dia">Por Día</option>
+              <option value="rango">Rango de Fechas</option>
+              <option value="mes">Por Mes (Instituciones)</option>
+            </select>
+          </div>
+
+          <template v-if="reportType === 'dia'">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Fecha</label>
+              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+            </div>
+          </template>
+
+          <template v-if="reportType === 'rango'">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Desde</label>
+              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+            </div>
+            <div>
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Hasta</label>
+              <input type="date" v-model="reportFechaTo" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+            </div>
+          </template>
+
+          <template v-if="reportType === 'mes'">
+            <div>
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Mes</label>
+              <input type="month" v-model="reportMes" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+            </div>
+          </template>
+
+          <div v-if="reportCargando" style="margin-top: 28px;">
+            <i class="mdi mdi-loading mdi-spin" style="color: var(--blue); font-size: 18px;"></i>
+          </div>
+        </div>
+
         <!-- Resumen de stats -->
-        <div class="report-summary">
+        <div class="report-summary" v-if="reportData">
           <div class="summary-card">
-            <div class="s-val">{{ stats.total }}</div>
+            <div class="s-val">{{ reportData.total }}</div>
             <div class="s-lbl">Total registrados</div>
           </div>
           <div class="summary-card">
-            <div class="s-val green">{{ stats.atendidos }}</div>
+            <div class="s-val green">{{ reportData.atendidos }}</div>
             <div class="s-lbl">Atendidos</div>
           </div>
           <div class="summary-card">
-            <div class="s-val orange">{{ stats.saltados }}</div>
+            <div class="s-val orange">{{ reportData.saltados }}</div>
             <div class="s-lbl">Saltados</div>
           </div>
           <div class="summary-card">
-            <div class="s-val blue">{{ stats.pendientes }}</div>
+            <div class="s-val blue">{{ reportData.pendientes }}</div>
             <div class="s-lbl">Pendientes</div>
           </div>
         </div>
 
 
-        <!-- Tabla de turnos atendidos -->
+        <!-- Tabla de turnos o instituciones -->
         <div class="report-body">
-          <template v-if="turnosAtendidos && turnosAtendidos.length > 0">
-            <table class="report-table">
+          <!-- TABLA DE TURNOS (Día y Rango) -->
+          <template v-if="(reportType === 'dia' || reportType === 'rango') && reportData">
+            <template v-if="turnosParaMostrar().length > 0">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Turno</th>
+                    <th>Nombre</th>
+                    <th>Institución</th>
+                    <th>Documento</th>
+                    <th>Servicio</th>
+                    <th>Creado</th>
+                    <th>Hora Atendido</th>
+                    <th>Estado</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="t in turnosParaMostrar()" :key="t._id">
+                    <td class="num">{{ String(t.numero).padStart(3,'0') }}</td>
+                    <td>{{ t.nombre }}</td>
+                    <td>{{ t.institucion }}</td>
+                    <td style="color:var(--muted);font-size:.82rem">{{ t.documento || '—' }}</td>
+                    <td>
+                      <span style="display:flex;align-items:center;gap:5px">
+                        <i :class="'mdi ' + servicioIcon(t.servicio)" style="font-size:14px;color:var(--blue)"></i>
+                        {{ t.servicio }}
+                      </span>
+                    </td>
+                    <td style="font-size:.82rem;color:var(--muted);white-space:nowrap">
+                      {{ fmtDateTime(t.creadoEn) }}
+                    </td>
+                    <td style="font-size:.82rem;color:var(--muted);white-space:nowrap">
+                      {{ fmtDateTime(t.atendidoEn) }}
+                    </td>
+                    <td>
+                      <span class="r-badge" :class="t.estado">{{ estadoLabel(t.estado) }}</span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
+
+            <div class="report-empty" v-else>
+              <i class="mdi mdi-tray-remove"></i>
+              <p>No hay turnos en este período.</p>
+            </div>
+          </template>
+
+          <!-- TABLA DE INSTITUCIONES (Mes) -->
+          <template v-if="reportType === 'mes' && reportData">
+            <template v-if="institutocionesPorMes().length > 0">
+              <table class="report-table">
+                <thead>
+                  <tr>
+                    <th>Institución</th>
+                    <th>Total</th>
+                    <th>Atendidos</th>
+                    <th>Saltados</th>
+                    <th>% Atendidos</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="inst in institutocionesPorMes()" :key="inst.nombre">
+                    <td><strong>{{ inst.nombre }}</strong></td>
+                    <td class="num">{{ inst.total }}</td>
+                    <td class="num" style="color: var(--green);">{{ inst.atendidos }}</td>
+                    <td class="num" style="color: var(--orange);">{{ inst.saltados }}</td>
+                    <td class="num" style="font-weight: 600; color: var(--blue);">{{ Math.round((inst.atendidos / inst.total) * 100) }}%</td>
+                  </tr>
+                </tbody>
+              </table>
+            </template>
+
+            <div class="report-empty" v-else>
+              <i class="mdi mdi-tray-remove"></i>
+              <p>No hay datos de instituciones en este mes.</p>
+            </div>
+          </template>
+        </div>
+
+        <!-- Footer con impresión -->
+        <div class="report-footer">
+          <span class="footer-note">
+            <i class="mdi mdi-information-outline"></i>
+            <span v-if="reportType === 'dia'">El informe incluye todos los turnos del día</span>
+            <span v-else-if="reportType === 'rango'">El informe incluye todos los turnos en el rango especificado</span>
+            <span v-else-if="reportType === 'mes'">El informe incluye el resumen de instituciones atendidas en el mes</span>
+          </span>
+          <button class="btn-print" @click="imprimirInforme">
+            <i class="mdi mdi-printer-outline"></i>
+            Imprimir / Guardar PDF
+          </button>
+        </div>
+
+        <!-- Zona visible solo al imprimir -->
+        <div class="print-area" style="display:none" ref="printArea">
+          <div class="print-header">
+            <h1>FUBAM – {{ reportType === 'mes' ? 'Informe de Instituciones' : 'Informe de Atención' }}</h1>
+            <p v-if="reportData">
+              {{ reportType === 'dia' ? 'Fecha: ' + reportFechaFrom : reportType === 'rango' ? 'Período: ' + reportFechaFrom + ' al ' + reportFechaTo : 'Mes: ' + reportMes }}
+              &nbsp;·&nbsp; 
+              Total: {{ reportData.total }} &nbsp;·&nbsp; 
+              Atendidos: {{ reportData.atendidos }} &nbsp;·&nbsp; 
+              Saltados: {{ reportData.saltados }} &nbsp;·&nbsp; 
+              Pendientes: {{ reportData.pendientes }}
+            </p>
+          </div>
+
+          <!-- TABLA DE TURNOS PARA IMPRIMIR -->
+          <template v-if="(reportType === 'dia' || reportType === 'rango') && reportData">
+            <table class="print-table">
               <thead>
                 <tr>
                   <th>Turno</th>
@@ -1477,83 +1627,44 @@
                 </tr>
               </thead>
               <tbody>
-                <tr v-for="t in turnosAtendidos" :key="t._id">
-                  <td class="num">{{ String(t.numero).padStart(3,'0') }}</td>
+                <tr v-for="t in turnosParaMostrar()" :key="'p'+t._id">
+                  <td>{{ String(t.numero).padStart(3,'0') }}</td>
                   <td>{{ t.nombre }}</td>
                   <td>{{ t.institucion }}</td>
-                  <td style="color:var(--muted);font-size:.82rem">{{ t.documento || '—' }}</td>
-                  <td>
-                    <span style="display:flex;align-items:center;gap:5px">
-                      <i :class="'mdi ' + servicioIcon(t.servicio)" style="font-size:14px;color:var(--blue)"></i>
-                      {{ t.servicio }}
-                    </span>
-                  </td>
-                  <td style="font-size:.82rem;color:var(--muted);white-space:nowrap">
-                    {{ fmtDateTime(t.creadoEn) }}
-                  </td>
-                  <td style="font-size:.82rem;color:var(--muted);white-space:nowrap">
-                    {{ fmtDateTime(t.atendidoEn) }}
-                  </td>
-                  <td>
-                    <span class="r-badge" :class="t.estado">{{ estadoLabel(t.estado) }}</span>
-                  </td>
+                  <td>{{ t.documento || '—' }}</td>
+                  <td>{{ t.servicio }}</td>
+                  <td>{{ fmtDateTime(t.creadoEn) }}</td>
+                  <td>{{ fmtDateTime(t.atendidoEn) }}</td>
+                  <td>{{ estadoLabel(t.estado) }}</td>
                 </tr>
               </tbody>
             </table>
           </template>
 
-          <div class="report-empty" v-else>
-            <i class="mdi mdi-tray-remove"></i>
-            <p>Aún no hay turnos atendidos en la jornada de hoy.</p>
-          </div>
-        </div>
+          <!-- TABLA DE INSTITUCIONES PARA IMPRIMIR -->
+          <template v-if="reportType === 'mes' && reportData">
+            <table class="print-table">
+              <thead>
+                <tr>
+                  <th>Institución</th>
+                  <th>Total</th>
+                  <th>Atendidos</th>
+                  <th>Saltados</th>
+                  <th>% Atendidos</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="inst in institutocionesPorMes()" :key="'inst'+inst.nombre">
+                  <td>{{ inst.nombre }}</td>
+                  <td>{{ inst.total }}</td>
+                  <td>{{ inst.atendidos }}</td>
+                  <td>{{ inst.saltados }}</td>
+                  <td>{{ Math.round((inst.atendidos / inst.total) * 100) }}%</td>
+                </tr>
+              </tbody>
+            </table>
+          </template>
 
-        <!-- Footer con impresión -->
-        <div class="report-footer">
-          <span class="footer-note">
-            <i class="mdi mdi-information-outline"></i>
-            El informe incluye todos los turnos atendidos y saltados del día
-          </span>
-          <button class="btn-print" @click="imprimirInforme">
-            <i class="mdi mdi-printer-outline"></i>
-            Imprimir / Guardar PDF
-          </button>
-        </div>
-
-        <!-- Zona visible solo al imprimir -->
-        <div class="print-area" style="display:none" ref="printArea">
-          <div class="print-header">
-            <h1>FUBAM – Informe de Atención</h1>
-            <p>Fecha: {{ reportFecha }} &nbsp;·&nbsp; Total turnos: {{ stats.total }} &nbsp;·&nbsp; Atendidos: {{
-              stats.atendidos }} &nbsp;·&nbsp; Saltados: {{ stats.saltados }} &nbsp;·&nbsp; Pendientes: {{
-              stats.pendientes }}</p>
-          </div>
-          <table class="print-table">
-            <thead>
-              <tr>
-                <th>Turno</th>
-                <th>Nombre</th>
-                <th>Institución</th>
-                <th>Documento</th>
-                <th>Servicio</th>
-                <th>Creado</th>
-                <th>Hora Atendido</th>
-                <th>Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="t in turnosAtendidos" :key="'p'+t._id">
-                <td>{{ String(t.numero).padStart(3,'0') }}</td>
-                <td>{{ t.nombre }}</td>
-                <td>{{ t.institucion }}</td>
-                <td>{{ t.documento || '—' }}</td>
-                <td>{{ t.servicio }}</td>
-                <td>{{ fmtDateTime(t.creadoEn) }}</td>
-                <td>{{ fmtDateTime(t.atendidoEn) }}</td>
-                <td>{{ estadoLabel(t.estado) }}</td>
-              </tr>
-            </tbody>
-          </table>
           <div class="print-footer">Generado por Sistema de Turnos FUBAM · {{ reportFecha }}</div>
         </div>
 
@@ -1643,6 +1754,13 @@
           toast: { visible: false, text: '', icon: 'mdi-check-circle' },
           _toastTimer: null,
           _sse: null,
+          // Filtros de reportes
+          reportType: 'dia',
+          reportFechaFrom: new Date().toISOString().split('T')[0],
+          reportFechaTo: new Date().toISOString().split('T')[0],
+          reportMes: new Date().toISOString().split('T')[0].slice(0, 7),
+          reportData: null,
+          reportCargando: false,
         };
       },
       computed: {
@@ -1833,6 +1951,73 @@
             hour12: true
           });
           this.showReport = true;
+          this.cargarReporte();
+        },
+
+        async cargarReporte() {
+          this.reportCargando = true;
+          try {
+            let url = '';
+            if (this.reportType === 'dia') {
+              url = `${API_BASE}/api/reportes/dia/${this.reportFechaFrom}`;
+            } else if (this.reportType === 'rango') {
+              url = `${API_BASE}/api/reportes/rango?desde=${this.reportFechaFrom}&hasta=${this.reportFechaTo}`;
+            } else if (this.reportType === 'mes') {
+              url = `${API_BASE}/api/reportes/mes?mes=${this.reportMes}`;
+            }
+
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('Error al obtener reporte');
+            
+            this.reportData = await resp.json();
+            this.reportFecha = new Date().toLocaleString('es-CO', {
+              weekday: 'long',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            });
+          } catch (e) {
+            this.showToast('Error al cargar el reporte', 'mdi-alert-circle');
+          } finally {
+            this.reportCargando = false;
+          }
+        },
+
+        turnosParaMostrar() {
+          if (!this.reportData) return [];
+          if (this.reportType === 'dia') {
+            return this.reportData.turnos || [];
+          }
+          // Para rango y mes, flatten los turnos
+          const turnos = [];
+          Object.values(this.reportData.porFecha || {}).forEach(dia => {
+            turnos.push(...dia);
+          });
+          return turnos;
+        },
+
+        institutocionesPorMes() {
+          if (!this.reportData || this.reportType !== 'mes') return [];
+          const instituciones = {};
+          Object.values(this.reportData.porFecha || {}).forEach(dia => {
+            dia.forEach(turno => {
+              if (!instituciones[turno.institucion]) {
+                instituciones[turno.institucion] = {
+                  nombre: turno.institucion,
+                  total: 0,
+                  atendidos: 0,
+                  saltados: 0
+                };
+              }
+              instituciones[turno.institucion].total++;
+              if (turno.estado === 'atendido') instituciones[turno.institucion].atendidos++;
+              if (turno.estado === 'saltado') instituciones[turno.institucion].saltados++;
+            });
+          });
+          return Object.values(instituciones).sort((a, b) => b.total - a.total);
         },
 
         imprimirInforme() {
