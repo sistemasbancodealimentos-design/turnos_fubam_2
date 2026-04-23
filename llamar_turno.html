@@ -1723,38 +1723,40 @@
           if (this.loading) return;
           this.loading = true;
           try {
-            const r = await fetch(`/api/siguiente`, { method: 'POST' });
+            // IMPORTANTE: Asegúrate de usar la ruta completa con API_BASE si no estás en el mismo dominio
+            const r = await fetch(`${API_BASE}/api/siguiente`, { method: 'POST' });
+
+            const data = await r.json(); // Leemos el cuerpo una sola vez
+
             if (!r.ok) {
-              let errorText = 'Error al llamar el siguiente turno.';
-              try {
-                const e = await r.json();
-                errorText = e.error || errorText;
-              } catch {
-                errorText = await r.text();
-              }
-              throw new Error(errorText);
+              throw new Error(data.error || 'Error al llamar el siguiente turno');
             }
-            const turno = await r.json();
-            this.turnoActual = turno;
-            this.registrarLlamado(turno._id);
+
+            this.turnoActual = data;
+            this.registrarLlamado(data._id);
             await this.loadAll();
             this.triggerAnimation();
-            await Voice.announce(turno, 2,
+            await Voice.announce(data, 2,
               () => this.isSpeaking = true,
               () => this.isSpeaking = false
             );
           } catch (e) {
+            console.error(e);
             this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
           } finally {
             this.loading = false;
           }
         },
 
+
         async llamarEspecifico(turno) {
           try {
-            const r = await fetch(`/api/turnos/${turno._id}/llamar`, { method: 'POST' });
-            if (!r.ok) throw new Error();
-            this.turnoActual = await r.json();
+            const r = await fetch(`${API_BASE}/api/turnos/${turno._id}/llamar`, { method: 'POST' });
+            const data = await r.json();
+
+            if (!r.ok) throw new Error(data.error || 'Error al llamar');
+
+            this.turnoActual = data;
             this.registrarLlamado(this.turnoActual._id);
             await this.loadAll();
             this.triggerAnimation();
@@ -1762,8 +1764,8 @@
               () => this.isSpeaking = true,
               () => this.isSpeaking = false
             );
-          } catch {
-            this.showToast('Error al llamar turno', 'mdi-alert-circle-outline');
+          } catch (e) {
+            this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
           }
         },
 
