@@ -1740,7 +1740,16 @@
           this.loading = true;
           try {
             const r = await fetch(`/api/siguiente`, { method: 'POST' });
-            if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
+            if (!r.ok) {
+              let errorText = 'Error al llamar el siguiente turno.';
+              try {
+                const e = await r.json();
+                errorText = e.error || errorText;
+              } catch {
+                errorText = await r.text();
+              }
+              throw new Error(errorText);
+            }
             const turno = await r.json();
             this.turnoActual = turno;
             this.registrarLlamado(turno._id);

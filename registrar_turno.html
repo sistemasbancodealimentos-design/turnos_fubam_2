@@ -457,8 +457,17 @@ Vue.createApp({
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(this.form),
         });
-        if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
-        this.turnoActual    = await r.json();
+        if (!r.ok) {
+          let errorText = 'Error al registrar el turno.';
+          try {
+            const e = await r.json();
+            errorText = e.error || errorText;
+          } catch {
+            errorText = await r.text();
+          }
+          throw new Error(errorText);
+        }
+        this.turnoActual     = await r.json();
         this.turnoRegistrado = true;
         this.loadStats();
       } catch (e) {
