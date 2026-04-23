@@ -176,7 +176,7 @@
       letter-spacing: .02em;
     }
     .btn-register:hover:not(:disabled) { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,95,166,.3); }
-    .btn-register:disabled { opacity: .5; cursor: not-allowed; }
+    .btn-register:disabled { opacity: 0.55; cursor: not-allowed; background: #B0BEC5; }
     .btn-register .mdi { font-size: 20px; }
 
     .error-msg { color: #C62828; font-size: .85rem; margin-top: -14px; margin-bottom: 12px; display: flex; align-items: center; gap: 4px; }
@@ -350,7 +350,7 @@
         />
 
         <!-- Submit -->
-        <button class="btn-register" :disabled="loading" @click="registrar">
+        <button class="btn-register" :disabled="loading || !formValid" @click="registrar">
           <span v-if="!loading">
             <i class="mdi mdi-ticket-confirmation-outline"></i>
             Registrar Turno
@@ -433,6 +433,14 @@ Vue.createApp({
     this.loadStats();
     setInterval(this.tickClock, 1000);
     setInterval(this.loadStats, 8000);
+  },
+  computed: {
+    formValid() {
+      return this.form.nombre.trim() !== '' && 
+             this.form.institucion.trim() !== '' && 
+             this.form.servicio !== '';
+             this.form.documento.trim() !== ''
+    }
   },
   methods: {
     tickClock() {
