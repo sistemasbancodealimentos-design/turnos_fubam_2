@@ -1459,21 +1459,6 @@
           </div>
         </div>
 
-        <div class="row mb-4 no-print">
-          <div class="col-12">
-            <div class="card p-3 shadow-sm">
-              <h5 class="mb-3"><i class="mdi mdi-file-chart"></i> Generar Reporte</h5>
-              <div class="d-flex flex-wrap gap-2 align-items-center">
-                <input type="date" v-model="filtroFecha.inicio" class="form-control" style="max-width: 200px;">
-                <span class="mx-2">a</span>
-                <input type="date" v-model="filtroFecha.fin" class="form-control" style="max-width: 200px;">
-                <button @click="generarReporte" class="btn btn-primary">
-                  <i class="mdi mdi-download"></i> Descargar CSV
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
 
         <!-- Tabla de turnos atendidos -->
         <div class="report-body">
