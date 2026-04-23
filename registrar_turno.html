@@ -340,14 +340,17 @@
         </div>
         <div class="error-msg" v-if="errors.servicio" style="margin-top:-16px"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.servicio }}</div>
 
-        <!-- Documento (optional) -->
-        <div class="field-label" style="margin-top:4px">N° de documento <span style="font-weight:400;text-transform:none">(opcional)</span></div>
+        <!-- Documento -->
+        <div class="field-label">N° de documento *</div>
         <input
           class="custom-input"
+          :class="{ 'error-border': errors.documento }"
           v-model="form.documento"
           placeholder="NIT / CEDULA"
+          @input="errors.documento = ''"
           maxlength="20"
         />
+        <div class="error-msg" v-if="errors.documento"><i class="mdi mdi-alert-circle-outline"></i>{{ errors.documento }}</div>
 
         <!-- Submit -->
         <button class="btn-register" :disabled="loading || !formValid" @click="registrar">
@@ -419,7 +422,7 @@ Vue.createApp({
     return {
       clock:          '',
       form:           { nombre: '', institucion: '', documento: '',  servicio: '' },
-      errors:         { nombre: '', institucion: '', servicio: '' },
+      errors:         { nombre: '', institucion: '', servicio: '', documento: '' },
       apiError:       '',
       loading:        false,
       turnoRegistrado: false,
@@ -438,8 +441,8 @@ Vue.createApp({
     formValid() {
       return this.form.nombre.trim() !== '' && 
              this.form.institucion.trim() !== '' && 
-             this.form.servicio !== '';
-             this.form.documento.trim() !== ''
+             this.form.servicio !== '' &&
+             this.form.documento.trim() !== '';
     }
   },
   methods: {
@@ -457,6 +460,7 @@ Vue.createApp({
       if (!this.form.nombre.trim())      { this.errors.nombre     = 'El nombre del representante es obligatorio.'; ok = false; }
       if (!this.form.institucion.trim()) { this.errors.institucion = 'El nombre de la institución es obligatorio.'; ok = false; }
       if (!this.form.servicio)           { this.errors.servicio    = 'Seleccione un servicio.'; ok = false; }
+      if (!this.form.documento.trim())   { this.errors.documento   = 'El número de documento es obligatorio.'; ok = false; }
       return ok;
     },
     async registrar() {
