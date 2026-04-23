@@ -436,7 +436,7 @@ Vue.createApp({
     },
     async loadStats() {
       try {
-        const r = await fetch(`https://backend-turnos-3.onrender.com/api/stats`);
+        const r = await fetch(`/api/stats`);
         this.stats = await r.json();
       } catch { /* backend offline */ }
     },
@@ -452,7 +452,7 @@ Vue.createApp({
       if (!this.validate()) return;
       this.loading = true;
       try {
-        const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos`, {
+        const r = await fetch(`/api/turnos`, {
           method:  'POST',
           headers: { 'Content-Type': 'application/json' },
           body:    JSON.stringify(this.form),

@@ -1673,7 +1673,7 @@
         initSSE() {
           try {
             // Conexión al flujo de eventos del servidor en Render
-            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
+            this._sse = new EventSource('/api/events');
 
             this._sse.onopen = () => { console.log("Conectado al servidor de eventos"); };
 
@@ -1692,7 +1692,7 @@
 
         connectSSE() {
           try {
-            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
+            this._sse = new EventSource('/api/events');
 
             this._sse.addEventListener('llamado', async (e) => {
               const turno = JSON.parse(e.data);
@@ -1714,8 +1714,8 @@
         async loadAll() {
           try {
             const [tRes, sRes] = await Promise.all([
-              fetch(`https://backend-turnos-3.onrender.com/api/turnos`),
-              fetch(`https://backend-turnos-3.onrender.com/api/stats`),
+              fetch(`/api/turnos`),
+              fetch(`/api/stats`),
             ]);
             this.turnos = await tRes.json();
             this.stats = await sRes.json();
@@ -1739,7 +1739,7 @@
           if (this.loading) return;
           this.loading = true;
           try {
-            const r = await fetch(`https://backend-turnos-3.onrender.com/api/siguiente`, { method: 'POST' });
+            const r = await fetch(`/api/siguiente`, { method: 'POST' });
             if (!r.ok) { const e = await r.json(); throw new Error(e.error); }
             const turno = await r.json();
             this.turnoActual = turno;
@@ -1759,7 +1759,7 @@
 
         async llamarEspecifico(turno) {
           try {
-            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/${turno._id}/llamar`, { method: 'POST' });
+            const r = await fetch(`/api/turnos/${turno._id}/llamar`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.turnoActual = await r.json();
             this.registrarLlamado(this.turnoActual._id);
@@ -1785,7 +1785,7 @@
         async marcarAtendido() {
           if (!this.turnoActual) return;
           try {
-            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/${this.turnoActual._id}/atender`, { method: 'POST' });
+            const r = await fetch(`/api/turnos/${this.turnoActual._id}/atender`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.registrarAtendido(this.turnoActual._id);
             this.turnoActual = null;
@@ -1799,7 +1799,7 @@
         async saltarTurno() {
           if (!this.turnoActual) return;
           try {
-            const r = await fetch(`https://backend-turnos-3.onrender.com/api/turnos/${this.turnoActual._id}/saltar`, { method: 'POST' });
+            const r = await fetch(`/api/turnos/${this.turnoActual._id}/saltar`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.registrarAtendido(this.turnoActual._id);
             this.turnoActual = null;

@@ -861,8 +861,8 @@
         async loadAll() {
           try {
             const [tRes, sRes] = await Promise.all([
-              fetch('https://backend-turnos-3.onrender.com/api/turnos'),
-              fetch('https://backend-turnos-3.onrender.com/api/stats'),
+              fetch('/api/turnos'),
+              fetch('/api/stats'),
             ]);
             const data = await tRes.json();
             this.stats = await sRes.json();
@@ -888,7 +888,7 @@
         // Actualiza la función initSSE
         initSSE() {
           try {
-            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
+            this._sse = new EventSource('/api/events');
 
             // Escucha específicamente el evento 'llamado' para anunciar por voz
             this._sse.addEventListener('llamado', async (e) => {
@@ -916,7 +916,7 @@
 
         connectSSE() {
           try {
-            this._sse = new EventSource('https://backend-turnos-3.onrender.com/api/events');
+            this._sse = new EventSource('/api/events');
 
             this._sse.onopen = () => { this.connStatus = 'online'; };
 
