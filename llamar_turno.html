@@ -1440,14 +1440,10 @@
         </div>
 
         <!-- Filtros -->
-        <div
-          style="padding: 16px 24px; background: #f9fbfd; border-bottom: 1px solid rgba(0,95,166,.15); display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+        <div style="padding: 16px 24px; background: #f9fbfd; border-bottom: 1px solid rgba(0,95,166,.15); display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
           <div>
-            <label
-              style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Tipo
-              de Reporte</label>
-            <select v-model="reportType" @change="reportFechaTo = reportFechaFrom; cargarReporte()"
-              style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; cursor: pointer;">
+            <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Tipo de Reporte</label>
+            <select v-model="reportType" @change="reportFechaTo = reportFechaFrom; cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; cursor: pointer;">
               <option value="dia">Por Día</option>
               <option value="rango">Rango de Fechas</option>
               <option value="mes">Por Mes (Instituciones)</option>
@@ -1456,63 +1452,57 @@
 
           <template v-if="reportType === 'dia'">
             <div>
-              <label
-                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Fecha</label>
-              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()"
-                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Fecha</label>
+              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
           </template>
 
           <template v-if="reportType === 'rango'">
             <div>
-              <label
-                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Desde</label>
-              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()"
-                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Desde</label>
+              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
             <div>
-              <label
-                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Hasta</label>
-              <input type="date" v-model="reportFechaTo" @change="cargarReporte()"
-                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Hasta</label>
+              <input type="date" v-model="reportFechaTo" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
           </template>
 
           <template v-if="reportType === 'mes'">
             <div>
-              <label
-                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Mes</label>
-              <input type="month" v-model="reportMes" @change="cargarReporte()"
-                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Mes</label>
+              <input type="month" v-model="reportMes" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
           </template>
 
           <div v-if="reportCargando" style="margin-top: 28px;">
             <i class="mdi mdi-loading mdi-spin" style="color: var(--blue); font-size: 18px;"></i>
           </div>
-          <button v-else @click="cargarReporte()"
-            style="margin-top:28px;padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s"
-            onmouseover="this.style.background='#00478A'" onmouseout="this.style.background='#005FA6'">
+          <button v-else @click="cargarReporte()" style="margin-top:28px;padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s" onmouseover="this.style.background='#00478A'" onmouseout="this.style.background='#005FA6'">
             <i class="mdi mdi-magnify" style="font-size:16px"></i> Generar
           </button>
         </div>
 
         <!-- Resumen de stats -->
-        <div class="report-summary" v-if="reportData">
+        <div class="report-summary" v-if="reportData" style="grid-template-columns: repeat(5, 1fr)">
           <div class="summary-card">
             <div class="s-val">{{ reportData.total }}</div>
-            <div class="s-lbl">Total registrados</div>
+            <div class="s-lbl">Total</div>
           </div>
           <div class="summary-card">
             <div class="s-val green">{{ reportData.atendidos }}</div>
             <div class="s-lbl">Atendidos</div>
           </div>
           <div class="summary-card">
+            <div class="s-val blue">{{ reportData.llamados }}</div>
+            <div class="s-lbl">Llamados</div>
+          </div>
+          <div class="summary-card">
             <div class="s-val orange">{{ reportData.saltados }}</div>
             <div class="s-lbl">Saltados</div>
           </div>
           <div class="summary-card">
-            <div class="s-val blue">{{ reportData.pendientes }}</div>
+            <div class="s-val" style="color:var(--muted)">{{ reportData.pendientes }}</div>
             <div class="s-lbl">Pendientes</div>
           </div>
         </div>
@@ -1541,8 +1531,7 @@
                 <tbody>
                   <tr v-for="t in turnosParaMostrar()" :key="t._id">
                     <td class="num">{{ String(t.numero).padStart(3,'0') }}</td>
-                    <td v-if="reportType === 'rango'" style="color:var(--muted);font-size:.82rem;white-space:nowrap">{{
-                      t.fecha || '—' }}</td>
+                    <td v-if="reportType === 'rango'" style="color:var(--muted);font-size:.82rem;white-space:nowrap">{{ t.fecha || '—' }}</td>
                     <td>{{ t.nombre }}</td>
                     <td>{{ t.institucion }}</td>
                     <td style="color:var(--muted);font-size:.82rem">{{ t.documento || '—' }}</td>
@@ -1591,8 +1580,7 @@
                     <td class="num">{{ inst.total }}</td>
                     <td class="num" style="color: var(--green);">{{ inst.atendidos }}</td>
                     <td class="num" style="color: var(--orange);">{{ inst.saltados }}</td>
-                    <td class="num" style="font-weight: 600; color: var(--blue);">{{ Math.round((inst.atendidos /
-                      inst.total) * 100) }}%</td>
+                    <td class="num" style="font-weight: 600; color: var(--blue);">{{ Math.round((inst.atendidos / inst.total) * 100) }}%</td>
                   </tr>
                 </tbody>
               </table>
@@ -1611,8 +1599,7 @@
             <i class="mdi mdi-information-outline"></i>
             <span v-if="reportType === 'dia'">El informe incluye todos los turnos del día</span>
             <span v-else-if="reportType === 'rango'">El informe incluye todos los turnos en el rango especificado</span>
-            <span v-else-if="reportType === 'mes'">El informe incluye el resumen de instituciones atendidas en el
-              mes</span>
+            <span v-else-if="reportType === 'mes'">El informe incluye el resumen de instituciones atendidas en el mes</span>
           </span>
           <button class="btn-print" @click="imprimirInforme">
             <i class="mdi mdi-printer-outline"></i>
@@ -1625,12 +1612,11 @@
           <div class="print-header">
             <h1>FUBAM – {{ reportType === 'mes' ? 'Informe de Instituciones' : 'Informe de Atención' }}</h1>
             <p v-if="reportData">
-              {{ reportType === 'dia' ? 'Fecha: ' + reportFechaFrom : reportType === 'rango' ? 'Período: ' +
-              reportFechaFrom + ' al ' + reportFechaTo : 'Mes: ' + reportMes }}
-              &nbsp;·&nbsp;
-              Total: {{ reportData.total }} &nbsp;·&nbsp;
-              Atendidos: {{ reportData.atendidos }} &nbsp;·&nbsp;
-              Saltados: {{ reportData.saltados }} &nbsp;·&nbsp;
+              {{ reportType === 'dia' ? 'Fecha: ' + reportFechaFrom : reportType === 'rango' ? 'Período: ' + reportFechaFrom + ' al ' + reportFechaTo : 'Mes: ' + reportMes }}
+              &nbsp;·&nbsp; 
+              Total: {{ reportData.total }} &nbsp;·&nbsp; 
+              Atendidos: {{ reportData.atendidos }} &nbsp;·&nbsp; 
+              Saltados: {{ reportData.saltados }} &nbsp;·&nbsp; 
               Pendientes: {{ reportData.pendientes }}
             </p>
           </div>
@@ -1780,9 +1766,9 @@
           _sse: null,
           // Filtros de reportes
           reportType: 'dia',
-          reportFechaFrom: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })(),
-          reportFechaTo: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })(),
-          reportMes: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; })(),
+          reportFechaFrom: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })(),
+          reportFechaTo:   (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })(),
+          reportMes:       (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; })(),
           reportData: null,
           reportCargando: false,
         };
@@ -1987,29 +1973,81 @@
 
         async cargarReporte() {
           this.reportCargando = true;
+          this.reportData = null;
           try {
-            let url = '';
+            // ── Reporte Por Día ──────────────────────────────────────────────
+            // Intenta primero la ruta dedicada; si no existe (backend viejo),
+            // cae en fallback usando /api/turnos + /api/stats (siempre disponibles).
             if (this.reportType === 'dia') {
-              url = `${API_BASE}/api/reportes/dia/${this.reportFechaFrom}`;
+              const url = `${API_BASE}/api/reportes/dia/${this.reportFechaFrom}`;
+              const resp = await fetch(url);
+
+              if (resp.ok) {
+                this.reportData = await resp.json();
+              } else if (resp.status === 404) {
+                // ── Fallback: usar endpoints existentes (backend no actualizado) ──
+                const [tRes, sRes] = await Promise.all([
+                  fetch(`${API_BASE}/api/turnos`),
+                  fetch(`${API_BASE}/api/stats`),
+                ]);
+                if (!tRes.ok || !sRes.ok) throw new Error('No se pudo conectar con el servidor.');
+                const turnos = await tRes.json();
+                const stats  = await sRes.json();
+                // Filtrar por la fecha seleccionada (campo 'fecha' o comparar creadoEn)
+                const filtrados = turnos.filter(t => {
+                  if (t.fecha) return t.fecha === this.reportFechaFrom;
+                  // fallback: comparar por fecha local del campo creadoEn
+                  const d = new Date(t.creadoEn);
+                  const fechaTurno = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+                  return fechaTurno === this.reportFechaFrom;
+                });
+                this.reportData = {
+                  fecha:      this.reportFechaFrom,
+                  total:      filtrados.length,
+                  atendidos:  filtrados.filter(t => t.estado === 'atendido').length,
+                  saltados:   filtrados.filter(t => t.estado === 'saltado').length,
+                  pendientes: filtrados.filter(t => t.estado === 'pendiente').length,
+                  llamados:   filtrados.filter(t => t.estado === 'llamado').length,
+                  turnos:     filtrados,
+                };
+              } else {
+                throw new Error(`Error ${resp.status} al cargar el informe.`);
+              }
+
+            // ── Reporte por Rango de Fechas ──────────────────────────────────
             } else if (this.reportType === 'rango') {
-              url = `${API_BASE}/api/reportes/rango?desde=${this.reportFechaFrom}&hasta=${this.reportFechaTo}`;
+              if (!this.reportFechaFrom || !this.reportFechaTo) {
+                this.showToast('Selecciona las fechas Desde y Hasta', 'mdi-alert-circle-outline');
+                return;
+              }
+              const url = `${API_BASE}/api/reportes/rango?desde=${this.reportFechaFrom}&hasta=${this.reportFechaTo}`;
+              const resp = await fetch(url);
+              if (resp.status === 404) {
+                this.showToast('Actualiza el backend en Render para usar reportes por rango', 'mdi-alert-circle-outline');
+                return;
+              }
+              if (!resp.ok) throw new Error(`Error ${resp.status}`);
+              this.reportData = await resp.json();
+
+            // ── Reporte por Mes ──────────────────────────────────────────────
             } else if (this.reportType === 'mes') {
-              url = `${API_BASE}/api/reportes/mes?mes=${this.reportMes}`;
+              if (!this.reportMes) {
+                this.showToast('Selecciona el mes', 'mdi-alert-circle-outline');
+                return;
+              }
+              const url = `${API_BASE}/api/reportes/mes?mes=${this.reportMes}`;
+              const resp = await fetch(url);
+              if (resp.status === 404) {
+                this.showToast('Actualiza el backend en Render para usar reportes por mes', 'mdi-alert-circle-outline');
+                return;
+              }
+              if (!resp.ok) throw new Error(`Error ${resp.status}`);
+              this.reportData = await resp.json();
             }
 
-            console.log('Cargando reporte:', url);
-            const resp = await fetch(url);
-            if (!resp.ok) {
-              const errMsg = await resp.text();
-              throw new Error(`Error ${resp.status}: ${errMsg}`);
-            }
-
-            const data = await resp.json();
-            console.log('Reporte cargado:', data);
-            this.reportData = data;
           } catch (e) {
             console.error('Error al cargar reporte:', e);
-            this.showToast('Error al cargar el reporte: ' + e.message, 'mdi-alert-circle');
+            this.showToast('Error: ' + e.message, 'mdi-alert-circle');
           } finally {
             this.reportCargando = false;
           }
@@ -2052,21 +2090,21 @@
         // ── Helper: fecha local (evita bug UTC en Colombia) ──────────────────
         fechaLocal() {
           const d = new Date();
-          return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
         },
 
         // ── Imprimir informe completo ─────────────────────────────────────────
         imprimirInforme() {
           if (!this.reportData) { this.showToast('Primero genera un informe', 'mdi-alert-circle-outline'); return; }
 
-          const rd = this.reportData;
+          const rd   = this.reportData;
           const tipo = this.reportType;
 
           // ── Encabezado descriptivo ──────────────────────────────────────────
           let periodoTexto = '';
-          if (tipo === 'dia') periodoTexto = `Fecha: <strong>${this.reportFechaFrom}</strong>`;
+          if (tipo === 'dia')   periodoTexto = `Fecha: <strong>${this.reportFechaFrom}</strong>`;
           if (tipo === 'rango') periodoTexto = `Período: <strong>${this.reportFechaFrom}</strong> al <strong>${this.reportFechaTo}</strong>`;
-          if (tipo === 'mes') periodoTexto = `Mes: <strong>${this.reportMes}</strong>`;
+          if (tipo === 'mes')   periodoTexto = `Mes: <strong>${this.reportMes}</strong>`;
 
           // ── Stats boxes ─────────────────────────────────────────────────────
           const statsHtml = `
@@ -2091,8 +2129,8 @@
 
           // ── Tabla de turnos (día y rango) ───────────────────────────────────
           let tablaHtml = '';
-          const estadoColor = { atendido: '#2E7D32', saltado: '#E65100', llamado: '#005FA6', pendiente: '#BF360C' };
-          const estadoLabel = { atendido: 'Atendido', saltado: 'Saltado', llamado: 'Llamado', pendiente: 'Esperando' };
+          const estadoColor = { atendido:'#2E7D32', saltado:'#E65100', llamado:'#005FA6', pendiente:'#BF360C' };
+          const estadoLabel = { atendido:'Atendido', saltado:'Saltado', llamado:'Llamado', pendiente:'Esperando' };
 
           if (tipo === 'dia' || tipo === 'rango') {
             const filas = this.turnosParaMostrar();
@@ -2114,17 +2152,17 @@
                 </thead>
                 <tbody>
                   ${filas.map((t, i) => `
-                    <tr style="${i % 2 === 1 ? 'background:#f9f9f9' : ''}">
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:700;color:#005FA6;font-family:monospace">${String(t.numero).padStart(3, '0')}</td>
-                      ${mostrarFecha ? `<td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.fecha || '—'}</td>` : ''}
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.nombre || '—'}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.institucion || '—'}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.documento || '—'}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.servicio || '—'}</td>
+                    <tr style="${i%2===1?'background:#f9f9f9':''}">
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:700;color:#005FA6;font-family:monospace">${String(t.numero).padStart(3,'0')}</td>
+                      ${mostrarFecha ? `<td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.fecha||'—'}</td>` : ''}
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.nombre||'—'}</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.institucion||'—'}</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.documento||'—'}</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.servicio||'—'}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt;white-space:nowrap">${this.fmtDateTime(t.creadoEn)}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt;white-space:nowrap">${this.fmtDateTime(t.atendidoEn)}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">
-                        <span style="background:${estadoColor[t.estado] || '#999'}22;color:${estadoColor[t.estado] || '#999'};font-size:8pt;font-weight:700;padding:3px 9px;border-radius:99px">${estadoLabel[t.estado] || t.estado}</span>
+                        <span style="background:${estadoColor[t.estado]||'#999'}22;color:${estadoColor[t.estado]||'#999'};font-size:8pt;font-weight:700;padding:3px 9px;border-radius:99px">${estadoLabel[t.estado]||t.estado}</span>
                       </td>
                     </tr>`).join('')}
                 </tbody>
@@ -2147,12 +2185,12 @@
                 </thead>
                 <tbody>
                   ${insts.map((inst, i) => `
-                    <tr style="${i % 2 === 1 ? 'background:#f9f9f9' : ''}">
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:600">${inst.nombre || '(Sin nombre)'}</td>
+                    <tr style="${i%2===1?'background:#f9f9f9':''}">
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:600">${inst.nombre||'(Sin nombre)'}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;font-family:monospace">${inst.total}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;color:#2E7D32;font-weight:700">${inst.atendidos}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;color:#E65100;font-weight:700">${inst.saltados}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;color:#005FA6">${inst.total > 0 ? Math.round((inst.atendidos / inst.total) * 100) : 0}%</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;color:#005FA6">${inst.total > 0 ? Math.round((inst.atendidos/inst.total)*100) : 0}%</td>
                     </tr>`).join('')}
                 </tbody>
               </table>`;
@@ -2241,7 +2279,7 @@
           }
         },
 
-
+        
 
         estadoLabel(estado) {
           const map = { pendiente: 'Esperando', llamado: 'Llamado', atendido: 'Atendido', saltado: 'Saltado' };
