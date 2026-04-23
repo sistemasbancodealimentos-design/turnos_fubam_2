@@ -402,7 +402,7 @@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
 <script>
-const API = 'https://backend-turnos-3.onrender.com/api';
+const API = '/api';
 
 const SERVICIOS = [
   { value: 'Despacho Institucional',  label: 'Despacho Institucional',  icon: 'mdi-cart-outline' },
@@ -458,12 +458,13 @@ Vue.createApp({
           body:    JSON.stringify(this.form),
         });
         if (!r.ok) {
+          const raw = await r.text();
           let errorText = 'Error al registrar el turno.';
           try {
-            const e = await r.json();
-            errorText = e.error || errorText;
+            const parsed = JSON.parse(raw);
+            errorText = parsed.error || errorText;
           } catch {
-            errorText = await r.text();
+            errorText = raw || errorText;
           }
           throw new Error(errorText);
         }
