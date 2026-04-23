@@ -768,7 +768,11 @@
 
   <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
   <script>
-    const API = '/api/turnos';
+    // ── Configuración de API ──────────────────────────────────────────────────
+    // Si el frontend y el backend están en el mismo servidor (Render), dejar vacío.
+    // Si el frontend está en otro dominio (ej. Netlify), poner la URL de Render:
+    // const API_BASE = 'https://tu-app.onrender.com';
+    const API_BASE = 'https://backend-turnos-3.onrender.com';
 
     const SERVICE_ICONS = {
       'Despacho Institucional': 'mdi-cart-outline',
@@ -861,8 +865,8 @@
         async loadAll() {
           try {
             const [tRes, sRes] = await Promise.all([
-              fetch('/api/turnos'),
-              fetch('/api/stats'),
+              fetch(`${API_BASE}/api/turnos`),
+              fetch(`${API_BASE}/api/stats`),
             ]);
             const data = await tRes.json();
             this.stats = await sRes.json();
@@ -885,38 +889,9 @@
           }
         },
 
-        // Actualiza la función initSSE
-        initSSE() {
-          try {
-            this._sse = new EventSource('/api/events');
-
-            // Escucha específicamente el evento 'llamado' para anunciar por voz
-            this._sse.addEventListener('llamado', async (e) => {
-              const turno = JSON.parse(e.data);
-              this.turnoActual = turno;
-              await this.loadAll();
-              this.triggerAnimation();
-
-              // Función de voz (Asegúrate de que el objeto Voice esté definido en tu archivo)
-              if (typeof Voice !== 'undefined') {
-                await Voice.announce(turno);
-              }
-            });
-
-            // Actualizar lista en otros eventos
-            const eventos = ['nuevo', 'atendido', 'saltado', 'eliminado'];
-            eventos.forEach(ev => {
-              this._sse.addEventListener(ev, () => this.loadAll());
-            });
-
-          } catch (err) {
-            console.log("Error de conexión SSE");
-          }
-        },
-
         connectSSE() {
           try {
-            this._sse = new EventSource('/api/events');
+            this._sse = new EventSource(`${API_BASE}/api/events`);
 
             this._sse.onopen = () => { this.connStatus = 'online'; };
 
