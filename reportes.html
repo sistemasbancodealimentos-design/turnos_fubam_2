@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Reportes de Turnos – FUBAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/@mdi/font@7/css/materialdesignicons.min.css" rel="stylesheet" />
+  <style>
+    :root {
+      --blue: #005FA6;
+      --blue-dark: #00478A;
+      --blue-light: #1976D2;
+      --blue-pale: #E8F1FB;
+      --bg: #EEF3F8;
+      --card: #FFFFFF;
+      --text: #0D2137;
+      --muted: #5C7A96;
+      --border: rgba(0, 95, 166, .15);
+      --green: #2E7D32;
+      --green-pale: #E8F5E9;
+      --orange: #E65100;
+      --orange-pale: #FBE9E7;
+      --red: #C62828;
+      --red-pale: #FFEBEE;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: 'Outfit', sans-serif; background: var(--bg); }
+
+    .topbar {
+      height: 56px;
+      background: var(--blue);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      padding: 0 24px;
+      gap: 16px;
+      box-shadow: 0 2px 12px rgba(0, 95, 166, .3);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .topbar .brand { font-size: 1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .topbar .sep { width: 1px; height: 20px; background: rgba(255, 255, 255, .25); }
+    .topbar .page-title { font-size: .9rem; opacity: .8; margin-left: auto; }
+    .topbar .clock { font-family: 'DM Mono', monospace; font-size: .9rem; opacity: .85; }
+    .back-link { color: rgba(255, 255, 255, .7); font-size: .82rem; display: flex; align-items: center; gap: 3px; text-decoration: none; cursor: pointer; transition: color .15s; }
+    .back-link:hover { color: #fff; }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
+
+    .filters {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 95, 166, .08);
+      border: 1.5px solid var(--border);
+    }
+
+    .filter-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: flex-end; }
+    .filter-item { display: flex; flex-direction: column; gap: 4px; }
+    .filter-item label { font-size: .85rem; font-weight: 600; color: var(--muted); text-transform: uppercase; }
+    .filter-item input, .filter-item select {
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-family: 'Outfit', sans-serif;
+      font-size: .95rem;
+      background: #fff;
+      color: var(--text);
+      transition: border-color .15s;
+    }
+    .filter-item input:focus, .filter-item select:focus {
+      outline: none;
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(0, 95, 166, .1);
+    }
+
+    .btn-search {
+      background: var(--blue);
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: 'Outfit', sans-serif;
+      font-weight: 600;
+      font-size: .95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all .15s;
+    }
+    .btn-search:hover { background: var(--blue-dark); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 95, 166, .3); }
+    .btn-search:disabled { opacity: .6; cursor: not-allowed; }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 2px 8px rgba(0, 95, 166, .08);
+      border: 1.5px solid var(--border);
+      text-align: center;
+    }
+
+    .stat-card .stat-label { font-size: .8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; margin-bottom: 8px; }
+    .stat-card .stat-value { font-size: 2.2rem; font-weight: 800; color: var(--blue); font-family: 'DM Mono', monospace; }
+
+    .stat-card.atendido { --color: var(--green); }
+    .stat-card.saltado { --color: var(--red); }
+    .stat-card.pendiente { --color: var(--orange); }
+    .stat-card.llamado { --color: var(--blue); }
+
+    .stat-card.atendido .stat-value { color: var(--green); }
+    .stat-card.saltado .stat-value { color: var(--red); }
+    .stat-card.pendiente .stat-value { color: var(--orange); }
+
+    .report-section {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      box-shadow: 0 2px 8px rgba(0, 95, 166, .08);
+      border: 1.5px solid var(--border);
+    }
+
+    .report-section h3 { font-size: 1.1rem; font-weight: 700; color: var(--text); margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .report-section h3 .mdi { font-size: 20px; color: var(--blue); }
+
+    .table-wrap { overflow-x: auto; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: .9rem;
+    }
+
+    table th {
+      background: var(--blue-pale);
+      color: var(--blue);
+      padding: 12px;
+      text-align: left;
+      font-weight: 700;
+      border-bottom: 2px solid var(--border);
+      text-transform: uppercase;
+      font-size: .8rem;
+    }
+
+    table td {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    table tr:hover { background: var(--blue-pale); }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .badge.atendido { background: var(--green-pale); color: var(--green); }
+    .badge.saltado { background: var(--red-pale); color: var(--red); }
+    .badge.pendiente { background: var(--orange-pale); color: var(--orange); }
+    .badge.llamado { background: var(--blue-pale); color: var(--blue); }
+
+    .loading { text-align: center; color: var(--muted); padding: 40px 20px; }
+    .loading .mdi { font-size: 40px; animation: spin 1s linear infinite; }
+
+    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+    .error-msg {
+      background: var(--red-pale);
+      color: var(--red);
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid var(--red);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--muted);
+    }
+
+    .empty-state .mdi { font-size: 48px; opacity: .5; margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <div class="brand"><i class="mdi mdi-chart-box-outline"></i> FUBAM</div>
+    <div class="sep"></div>
+    <div class="page-title">Reportes de Turnos</div>
+    <a href="/" class="back-link" onclick="window.history.back(); return false;">
+      <i class="mdi mdi-arrow-left"></i> Volver
+    </a>
+    <div class="clock" id="clock"></div>
+  </div>
+
+  <div class="container" id="app">
+    <!-- FILTROS -->
+    <div class="filters">
+      <div class="filter-group">
+        <div class="filter-item">
+          <label>Tipo de Reporte</label>
+          <select v-model="filtro.tipo" @change="limpiarFechas">
+            <option value="dia">Por Día</option>
+            <option value="rango">Rango de Fechas</option>
+            <option value="mes">Por Mes</option>
+          </select>
+        </div>
+
+        <template v-if="filtro.tipo === 'dia'">
+          <div class="filter-item">
+            <label>Seleccionar Fecha</label>
+            <input type="date" v-model="filtro.fecha" />
+          </div>
+        </template>
+
+        <template v-if="filtro.tipo === 'rango'">
+          <div class="filter-item">
+            <label>Desde</label>
+            <input type="date" v-model="filtro.desde" />
+          </div>
+          <div class="filter-item">
+            <label>Hasta</label>
+            <input type="date" v-model="filtro.hasta" />
+          </div>
+        </template>
+
+        <template v-if="filtro.tipo === 'mes'">
+          <div class="filter-item">
+            <label>Mes</label>
+            <input type="month" v-model="filtro.mesValor" />
+          </div>
+        </template>
+
+        <button class="btn-search" @click="buscar" :disabled="cargando">
+          <span v-if="!cargando"><i class="mdi mdi-magnify"></i> Buscar</span>
+          <span v-else><i class="mdi mdi-loading mdi-spin"></i> Buscando...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- MENSAJES DE ERROR -->
+    <div v-if="error" class="error-msg">
+      <i class="mdi mdi-alert-circle-outline"></i> {{ error }}
+    </div>
+
+    <!-- ESTADÍSTICAS -->
+    <template v-if="reporte && !cargando">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total de Turnos</div>
+          <div class="stat-value">{{ reporte.total }}</div>
+        </div>
+        <div class="stat-card atendido">
+          <div class="stat-label">Atendidos</div>
+          <div class="stat-value">{{ reporte.atendidos }}</div>
+        </div>
+        <div class="stat-card saltado">
+          <div class="stat-label">Saltados</div>
+          <div class="stat-value">{{ reporte.saltados }}</div>
+        </div>
+        <div class="stat-card pendiente">
+          <div class="stat-label">Pendientes</div>
+          <div class="stat-value">{{ reporte.pendientes }}</div>
+        </div>
+      </div>
+
+      <!-- TABLA DE TURNOS -->
+      <div class="report-section">
+        <h3><i class="mdi mdi-clipboard-list"></i> Detalle de Turnos</h3>
+        <template v-if="turnosMostrados.length > 0">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Nombre</th>
+                  <th>Institución</th>
+                  <th>Servicio</th>
+                  <th>Estado</th>
+                  <th>Hora Creación</th>
+                  <th>Hora Atención</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr v-for="t in turnosMostrados" :key="t._id">
+                  <td><strong>{{ String(t.numero).padStart(3, '0') }}</strong></td>
+                  <td>{{ t.nombre }}</td>
+                  <td>{{ t.institucion || '—' }}</td>
+                  <td>{{ t.servicio }}</td>
+                  <td><span class="badge" :class="t.estado">{{ t.estado }}</span></td>
+                  <td>{{ fmtHora(t.creadoEn) }}</td>
+                  <td>{{ fmtHora(t.atendidoEn) || '—' }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </template>
+        <template v-else>
+          <div class="empty-state">
+            <i class="mdi mdi-inbox-outline"></i>
+            <p>No hay turnos que mostrar</p>
+          </div>
+        </template>
+      </div>
+    </template>
+
+    <template v-if="cargando">
+      <div class="loading">
+        <i class="mdi mdi-loading"></i>
+        <p>Cargando reportes...</p>
+      </div>
+    </template>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.prod.js"></script>
+  <script>
+    const API_BASE = 'https://backend-turnos-3.onrender.com';
+
+    Vue.createApp({
+      data() {
+        return {
+          filtro: {
+            tipo: 'dia',
+            fecha: new Date().toISOString().split('T')[0],
+            desde: new Date(new Date().setDate(new Date().getDate() - 7)).toISOString().split('T')[0],
+            hasta: new Date().toISOString().split('T')[0],
+            mesValor: new Date().toISOString().split('T')[0].slice(0, 7)
+          },
+          reporte: null,
+          cargando: false,
+          error: '',
+          clock: ''
+        };
+      },
+      computed: {
+        turnosMostrados() {
+          if (!this.reporte) return [];
+          if (this.filtro.tipo === 'dia') {
+            return this.reporte.turnos || [];
+          }
+          // Para rango y mes, flatten los turnos
+          const turnos = [];
+          Object.values(this.reporte.porFecha || {}).forEach(dia => {
+            turnos.push(...dia);
+          });
+          return turnos.sort((a, b) => new Date(a.creadoEn) - new Date(b.creadoEn));
+        }
+      },
+      methods: {
+        async buscar() {
+          this.error = '';
+          this.reporte = null;
+          this.cargando = true;
+
+          try {
+            let url = '';
+            if (this.filtro.tipo === 'dia') {
+              url = `${API_BASE}/api/reportes/dia/${this.filtro.fecha}`;
+            } else if (this.filtro.tipo === 'rango') {
+              url = `${API_BASE}/api/reportes/rango?desde=${this.filtro.desde}&hasta=${this.filtro.hasta}`;
+            } else if (this.filtro.tipo === 'mes') {
+              url = `${API_BASE}/api/reportes/mes?mes=${this.filtro.mesValor}`;
+            }
+
+            const resp = await fetch(url);
+            if (!resp.ok) throw new Error('Error al obtener reportes');
+            
+            this.reporte = await resp.json();
+          } catch (e) {
+            this.error = e.message || 'Error al obtener los reportes. Intente nuevamente.';
+          } finally {
+            this.cargando = false;
+          }
+        },
+        limpiarFechas() {
+          this.reporte = null;
+          this.error = '';
+        },
+        fmtHora(fecha) {
+          if (!fecha) return '';
+          try {
+            return new Date(fecha).toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          } catch {
+            return '';
+          }
+        },
+        tickClock() {
+          this.clock = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        }
+      },
+      mounted() {
+        this.tickClock();
+        setInterval(() => this.tickClock(), 1000);
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
