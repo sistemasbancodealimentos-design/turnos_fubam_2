@@ -1780,7 +1780,7 @@
         async marcarAtendido() {
           if (!this.turnoActual) return;
           try {
-            const r = await fetch(`/api/turnos/${this.turnoActual._id}/atender`, { method: 'POST' });
+            const r = await fetch(`${API_BASE}/api/turnos/${this.turnoActual._id}/atender`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.registrarAtendido(this.turnoActual._id);
             this.turnoActual = null;
@@ -1794,7 +1794,7 @@
         async saltarTurno() {
           if (!this.turnoActual) return;
           try {
-            const r = await fetch(`/api/turnos/${this.turnoActual._id}/saltar`, { method: 'POST' });
+            const r = await fetch(`${API_BASE}/api/turnos/${this.turnoActual._id}/saltar`, { method: 'POST' });
             if (!r.ok) throw new Error();
             this.registrarAtendido(this.turnoActual._id);
             this.turnoActual = null;
