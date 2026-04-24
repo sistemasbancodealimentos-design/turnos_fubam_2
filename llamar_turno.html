@@ -1440,10 +1440,14 @@
         </div>
 
         <!-- Filtros -->
-        <div style="padding: 16px 24px; background: #f9fbfd; border-bottom: 1px solid rgba(0,95,166,.15); display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
+        <div
+          style="padding: 16px 24px; background: #f9fbfd; border-bottom: 1px solid rgba(0,95,166,.15); display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap;">
           <div>
-            <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Tipo de Reporte</label>
-            <select v-model="reportType" @change="reportFechaTo = reportFechaFrom; cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; cursor: pointer;">
+            <label
+              style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Tipo
+              de Reporte</label>
+            <select v-model="reportType" @change="reportFechaTo = reportFechaFrom; cargarReporte()"
+              style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem; cursor: pointer;">
               <option value="dia">Por Día</option>
               <option value="rango">Rango de Fechas</option>
               <option value="mes">Por Mes (Instituciones)</option>
@@ -1452,33 +1456,43 @@
 
           <template v-if="reportType === 'dia'">
             <div>
-              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Fecha</label>
-              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label
+                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Fecha</label>
+              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()"
+                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
           </template>
 
           <template v-if="reportType === 'rango'">
             <div>
-              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Desde</label>
-              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label
+                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Desde</label>
+              <input type="date" v-model="reportFechaFrom" @change="cargarReporte()"
+                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
             <div>
-              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Hasta</label>
-              <input type="date" v-model="reportFechaTo" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label
+                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Hasta</label>
+              <input type="date" v-model="reportFechaTo" @change="cargarReporte()"
+                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
           </template>
 
           <template v-if="reportType === 'mes'">
             <div>
-              <label style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Mes</label>
-              <input type="month" v-model="reportMes" @change="cargarReporte()" style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
+              <label
+                style="font-size: 0.8rem; color: var(--muted); font-weight: 600; text-transform: uppercase; display: block; margin-bottom: 4px;">Mes</label>
+              <input type="month" v-model="reportMes" @change="cargarReporte()"
+                style="padding: 8px 12px; border: 1px solid rgba(0,95,166,.15); border-radius: 6px; font-family: 'Outfit', sans-serif; font-size: 0.9rem;">
             </div>
           </template>
 
           <div v-if="reportCargando" style="margin-top: 28px;">
             <i class="mdi mdi-loading mdi-spin" style="color: var(--blue); font-size: 18px;"></i>
           </div>
-          <button v-else @click="cargarReporte()" style="margin-top:28px;padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s" onmouseover="this.style.background='#00478A'" onmouseout="this.style.background='#005FA6'">
+          <button v-else @click="cargarReporte()"
+            style="margin-top:28px;padding:9px 20px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-family:'Outfit',sans-serif;font-size:.88rem;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:background .2s"
+            onmouseover="this.style.background='#00478A'" onmouseout="this.style.background='#005FA6'">
             <i class="mdi mdi-magnify" style="font-size:16px"></i> Generar
           </button>
         </div>
@@ -1531,7 +1545,8 @@
                 <tbody>
                   <tr v-for="t in turnosParaMostrar()" :key="t._id">
                     <td class="num">{{ String(t.numero).padStart(3,'0') }}</td>
-                    <td v-if="reportType === 'rango'" style="color:var(--muted);font-size:.82rem;white-space:nowrap">{{ t.fecha || '—' }}</td>
+                    <td v-if="reportType === 'rango'" style="color:var(--muted);font-size:.82rem;white-space:nowrap">{{
+                      t.fecha || '—' }}</td>
                     <td>{{ t.nombre }}</td>
                     <td>{{ t.institucion }}</td>
                     <td style="color:var(--muted);font-size:.82rem">{{ t.documento || '—' }}</td>
@@ -1580,7 +1595,8 @@
                     <td class="num">{{ inst.total }}</td>
                     <td class="num" style="color: var(--green);">{{ inst.atendidos }}</td>
                     <td class="num" style="color: var(--orange);">{{ inst.saltados }}</td>
-                    <td class="num" style="font-weight: 600; color: var(--blue);">{{ Math.round((inst.atendidos / inst.total) * 100) }}%</td>
+                    <td class="num" style="font-weight: 600; color: var(--blue);">{{ Math.round((inst.atendidos /
+                      inst.total) * 100) }}%</td>
                   </tr>
                 </tbody>
               </table>
@@ -1599,7 +1615,8 @@
             <i class="mdi mdi-information-outline"></i>
             <span v-if="reportType === 'dia'">El informe incluye todos los turnos del día</span>
             <span v-else-if="reportType === 'rango'">El informe incluye todos los turnos en el rango especificado</span>
-            <span v-else-if="reportType === 'mes'">El informe incluye el resumen de instituciones atendidas en el mes</span>
+            <span v-else-if="reportType === 'mes'">El informe incluye el resumen de instituciones atendidas en el
+              mes</span>
           </span>
           <button class="btn-print" @click="imprimirInforme">
             <i class="mdi mdi-printer-outline"></i>
@@ -1612,11 +1629,12 @@
           <div class="print-header">
             <h1>FUBAM – {{ reportType === 'mes' ? 'Informe de Instituciones' : 'Informe de Atención' }}</h1>
             <p v-if="reportData">
-              {{ reportType === 'dia' ? 'Fecha: ' + reportFechaFrom : reportType === 'rango' ? 'Período: ' + reportFechaFrom + ' al ' + reportFechaTo : 'Mes: ' + reportMes }}
-              &nbsp;·&nbsp; 
-              Total: {{ reportData.total }} &nbsp;·&nbsp; 
-              Atendidos: {{ reportData.atendidos }} &nbsp;·&nbsp; 
-              Saltados: {{ reportData.saltados }} &nbsp;·&nbsp; 
+              {{ reportType === 'dia' ? 'Fecha: ' + reportFechaFrom : reportType === 'rango' ? 'Período: ' +
+              reportFechaFrom + ' al ' + reportFechaTo : 'Mes: ' + reportMes }}
+              &nbsp;·&nbsp;
+              Total: {{ reportData.total }} &nbsp;·&nbsp;
+              Atendidos: {{ reportData.atendidos }} &nbsp;·&nbsp;
+              Saltados: {{ reportData.saltados }} &nbsp;·&nbsp;
               Pendientes: {{ reportData.pendientes }}
             </p>
           </div>
@@ -1721,393 +1739,404 @@
       say(text) {
         return new Promise(resolve => {
           if (!('speechSynthesis' in window)) return resolve();
+
+          // Cancelamos cualquier locución previa
           window.speechSynthesis.cancel();
-          const u = new SpeechSynthesisUtterance(text);
-          u.lang = 'es-AR';
-          u.rate = 0.82;
-          u.pitch = 1.0;
-          u.volume = 1.0;
-          const v = this.spanishVoice();
-          if (v) u.voice = v;
-          u.onend = u.onerror = resolve;
-          window.speechSynthesis.speak(u);
+
+          // Pequeño delay de 50ms para que el navegador limpie el buffer
+          setTimeout(() => {
+            const u = new SpeechSynthesisUtterance(text);
+            u.lang = 'es-CO'; // Cambiado a CO para mayor naturalidad local
+            u.rate = 0.9;     // Un poco más rápido para evitar el arrastre de voz
+            u.pitch = 1.0;
+            u.volume = 1.0;
+
+            const v = this.spanishVoice();
+            if (v) u.voice = v;
+
+            u.onend = () => resolve();
+            u.onerror = (e) => {
+              console.error("Error en voz:", e);
+              resolve();
+            };
+
+            window.speechSynthesis.speak(u);
+          }, 50);
         });
       },
       async announce(turno, times = 2, onStart, onEnd) {
         const num = String(turno.numero).padStart(3, '0');
-        const text = `Turno número ${num}. ${turno.nombre}. ${turno.institucion}.  ${turno.documento}. Por favor pasar al módulo de ${turno.servicio}.`;
+        const text = `Turno número ${num}. ${turno.nombre}. ${turno.institucion}. Por favor pasar al módulo de ${turno.servicio}.`;
+
         onStart && onStart();
         for (let i = 0; i < times; i++) {
           await this.say(text);
-          if (i < times - 1) await new Promise(r => setTimeout(r, 700));
+          // Aumentamos a 1.2 segundos para dar estabilidad
+          if (i < times - 1) await new Promise(r => setTimeout(r, 1200));
         }
         onEnd && onEnd();
       }
     };
 
 
-    Vue.createApp({
-      data() {
-        return {
-          clock: '',
-          turnos: [],
-          turnoActual: null,
-          stats: { total: 0, pendientes: 0, llamados: 0, atendidos: 0, saltados: 0 },
-          tab: 'pendientes',
-          loading: false,
-          animating: false,
-          isSpeaking: false,
-          voiceAvailable: 'speechSynthesis' in window,
-          showReport: false,
-          reportFecha: '',
-          turnoTimestamps: JSON.parse(localStorage.getItem('fubam_timestamps') || '{}'),
-          toast: { visible: false, text: '', icon: 'mdi-check-circle' },
-          _toastTimer: null,
-          _sse: null,
-          // Filtros de reportes
-          reportType: 'dia',
-          reportFechaFrom: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })(),
-          reportFechaTo:   (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; })(),
-          reportMes:       (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; })(),
-          reportData: null,
-          reportCargando: false,
-        };
-      },
-      computed: {
-        turnosAtendidos() {
-          return (this.turnos || []).filter(
-            t => t.estado === 'atendido' || t.estado === 'saltado'
-          );
+      Vue.createApp({
+        data() {
+          return {
+            clock: '',
+            turnos: [],
+            turnoActual: null,
+            stats: { total: 0, pendientes: 0, llamados: 0, atendidos: 0, saltados: 0 },
+            tab: 'pendientes',
+            loading: false,
+            animating: false,
+            isSpeaking: false,
+            voiceAvailable: 'speechSynthesis' in window,
+            showReport: false,
+            reportFecha: '',
+            turnoTimestamps: JSON.parse(localStorage.getItem('fubam_timestamps') || '{}'),
+            toast: { visible: false, text: '', icon: 'mdi-check-circle' },
+            _toastTimer: null,
+            _sse: null,
+            // Filtros de reportes
+            reportType: 'dia',
+            reportFechaFrom: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })(),
+            reportFechaTo: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })(),
+            reportMes: (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; })(),
+            reportData: null,
+            reportCargando: false,
+          };
         },
+        computed: {
+          turnosAtendidos() {
+            return (this.turnos || []).filter(
+              t => t.estado === 'atendido' || t.estado === 'saltado'
+            );
+          },
 
-        filteredTurnos() {
-          if (this.tab === 'pendientes')
-            return this.turnos.filter(t => t.estado === 'pendiente' || t.estado === 'llamado');
-          return [...this.turnos].reverse();
+          filteredTurnos() {
+            if (this.tab === 'pendientes')
+              return this.turnos.filter(t => t.estado === 'pendiente' || t.estado === 'llamado');
+            return [...this.turnos].reverse();
+          },
+
         },
-
-      },
-      mounted() {
-        Voice.init();
-        this.tickClock();
-        this.loadAll();
-        setInterval(this.tickClock, 1000);
-        setInterval(this.loadAll, 6000); // fallback polling
-        this.connectSSE();
-      },
-      beforeUnmount() {
-        if (this._sse) this._sse.close();
-      },
-      methods: {
-        tickClock() {
-          this.clock = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+        mounted() {
+          Voice.init();
+          this.tickClock();
+          this.loadAll();
+          setInterval(this.tickClock, 1000);
+          setInterval(this.loadAll, 6000); // fallback polling
+          this.connectSSE();
         },
+        beforeUnmount() {
+          if (this._sse) this._sse.close();
+        },
+        methods: {
+          tickClock() {
+            this.clock = new Date().toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+          },
 
-        connectSSE() {
-          try {
-            this._sse = new EventSource(`${API_BASE}/api/events`);
+          connectSSE() {
+            try {
+              this._sse = new EventSource(`${API_BASE}/api/events`);
 
-            this._sse.addEventListener('llamado', async (e) => {
-              const turno = JSON.parse(e.data);
-              this.turnoActual = turno;
-              this.registrarLlamado(turno._id);
+              this._sse.addEventListener('llamado', async (e) => {
+                const turno = JSON.parse(e.data);
+                this.turnoActual = turno;
+                this.registrarLlamado(turno._id);
+                await this.loadAll();
+                this.triggerAnimation();
+                await Voice.announce(turno, 2, () => this.isSpeaking = true, () => this.isSpeaking = false);
+              });
+
+              this._sse.addEventListener('nuevo', () => this.loadAll());
+              this._sse.addEventListener('atendido', () => this.loadAll());
+              this._sse.addEventListener('saltado', () => this.loadAll());
+              this._sse.addEventListener('eliminado', () => this.loadAll());
+              this._sse.onerror = () => { /* fallback polling handles it */ };
+            } catch { /* SSE not available */ }
+          },
+
+          async loadAll() {
+            try {
+              const [tRes, sRes] = await Promise.all([
+                fetch(`${API_BASE}/api/turnos`),
+                fetch(`${API_BASE}/api/stats`),
+              ]);
+              this.turnos = await tRes.json();
+              this.stats = await sRes.json();
+
+              // Keep turnoActual in sync
+              if (this.turnoActual) {
+                const found = this.turnos.find(t => t._id === this.turnoActual._id);
+                if (found) this.turnoActual = found;
+              }
+              // Auto-set turnoActual to last called one if none set
+              if (!this.turnoActual) {
+                const called = [...this.turnos].reverse().find(t => t.estado === 'llamado');
+                if (called) this.turnoActual = called;
+              }
+            } catch {
+              // backend offline – keep stale data
+            }
+          },
+
+          async llamarSiguiente() {
+            if (this.loading) return;
+            this.loading = true;
+            try {
+              // IMPORTANTE: Asegúrate de usar la ruta completa con API_BASE si no estás en el mismo dominio
+              const r = await fetch(`${API_BASE}/api/siguiente`, { method: 'POST' });
+
+              const data = await r.json(); // Leemos el cuerpo una sola vez
+
+              if (!r.ok) {
+                throw new Error(data.error || 'Error al llamar el siguiente turno');
+              }
+
+              this.turnoActual = data;
+              this.registrarLlamado(data._id);
               await this.loadAll();
               this.triggerAnimation();
-              await Voice.announce(turno, 2, () => this.isSpeaking = true, () => this.isSpeaking = false);
+            } catch (e) {
+              console.error(e);
+              this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
+            } finally {
+              this.loading = false;
+            }
+          },
+
+
+          async llamarEspecifico(turno) {
+            try {
+              const r = await fetch(`${API_BASE}/api/turnos/${turno._id}/llamar`, { method: 'POST' });
+              const data = await r.json();
+
+              if (!r.ok) throw new Error(data.error || 'Error al llamar');
+
+              this.turnoActual = data;
+              this.registrarLlamado(this.turnoActual._id);
+              await this.loadAll();
+              this.triggerAnimation();
+              await Voice.announce(this.turnoActual, 2,
+                () => this.isSpeaking = true,
+                () => this.isSpeaking = false
+              );
+            } catch (e) {
+              this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
+            }
+          },
+
+          repetirLlamado() {
+            if (!this.turnoActual || this.isSpeaking) return;
+            Voice.announce(this.turnoActual, 1,
+              () => this.isSpeaking = true,
+              () => this.isSpeaking = false
+            );
+          },
+
+          async marcarAtendido() {
+            if (!this.turnoActual) return;
+            try {
+              const r = await fetch(`${API_BASE}/api/turnos/${this.turnoActual._id}/atender`, { method: 'POST' });
+              if (!r.ok) throw new Error();
+              this.registrarAtendido(this.turnoActual._id);
+              this.turnoActual = null;
+              await this.loadAll();
+              this.showToast('Turno marcado como atendido', 'mdi-check-circle');
+            } catch {
+              this.showToast('Error al actualizar turno', 'mdi-alert-circle-outline');
+            }
+          },
+
+          async saltarTurno() {
+            if (!this.turnoActual) return;
+            try {
+              const r = await fetch(`${API_BASE}/api/turnos/${this.turnoActual._id}/saltar`, { method: 'POST' });
+              if (!r.ok) throw new Error();
+              this.registrarAtendido(this.turnoActual._id);
+              this.turnoActual = null;
+              await this.loadAll();
+              this.showToast('Turno saltado', 'mdi-skip-next');
+            } catch {
+              this.showToast('Error al saltar turno', 'mdi-alert-circle-outline');
+            }
+          },
+
+          triggerAnimation() {
+            this.animating = false;
+            this.$nextTick(() => {
+              this.animating = true;
+              setTimeout(() => this.animating = false, 600);
             });
+          },
 
-            this._sse.addEventListener('nuevo', () => this.loadAll());
-            this._sse.addEventListener('atendido', () => this.loadAll());
-            this._sse.addEventListener('saltado', () => this.loadAll());
-            this._sse.addEventListener('eliminado', () => this.loadAll());
-            this._sse.onerror = () => { /* fallback polling handles it */ };
-          } catch { /* SSE not available */ }
-        },
+          showToast(text, icon = 'mdi-check-circle') {
+            clearTimeout(this._toastTimer);
+            this.toast = { visible: true, text, icon };
+            this._toastTimer = setTimeout(() => this.toast.visible = false, 3000);
+          },
 
-        async loadAll() {
-          try {
-            const [tRes, sRes] = await Promise.all([
-              fetch(`${API_BASE}/api/turnos`),
-              fetch(`${API_BASE}/api/stats`),
-            ]);
-            this.turnos = await tRes.json();
-            this.stats = await sRes.json();
+          servicioIcon(s) { return SERVICE_ICONS[s] || 'mdi-cart-outline'; },
 
-            // Keep turnoActual in sync
-            if (this.turnoActual) {
-              const found = this.turnos.find(t => t._id === this.turnoActual._id);
-              if (found) this.turnoActual = found;
-            }
-            // Auto-set turnoActual to last called one if none set
-            if (!this.turnoActual) {
-              const called = [...this.turnos].reverse().find(t => t.estado === 'llamado');
-              if (called) this.turnoActual = called;
-            }
-          } catch {
-            // backend offline – keep stale data
-          }
-        },
+          abrirInforme() {
+            this.reportFecha = new Date().toLocaleString('es-CO', {
+              weekday: 'long',
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              hour12: true
+            });
+            // Reset del reporte
+            this.reportType = 'dia';
+            this.reportFechaFrom = this.fechaLocal();
+            this.reportFechaTo = this.fechaLocal();
+            this.reportMes = this.fechaLocal().slice(0, 7);
+            this.reportData = null;
+            this.showReport = true;
+            // Cargar datos automáticamente
+            setTimeout(() => this.cargarReporte(), 100);
+          },
 
-        async llamarSiguiente() {
-          if (this.loading) return;
-          this.loading = true;
-          try {
-            // IMPORTANTE: Asegúrate de usar la ruta completa con API_BASE si no estás en el mismo dominio
-            const r = await fetch(`${API_BASE}/api/siguiente`, { method: 'POST' });
+          async cargarReporte() {
+            this.reportCargando = true;
+            this.reportData = null;
+            try {
+              // ── Reporte Por Día ──────────────────────────────────────────────
+              // Intenta primero la ruta dedicada; si no existe (backend viejo),
+              // cae en fallback usando /api/turnos + /api/stats (siempre disponibles).
+              if (this.reportType === 'dia') {
+                const url = `${API_BASE}/api/reportes/dia/${this.reportFechaFrom}`;
+                const resp = await fetch(url);
 
-            const data = await r.json(); // Leemos el cuerpo una sola vez
+                if (resp.ok) {
+                  this.reportData = await resp.json();
+                } else if (resp.status === 404) {
+                  // ── Fallback: usar endpoints existentes (backend no actualizado) ──
+                  const [tRes, sRes] = await Promise.all([
+                    fetch(`${API_BASE}/api/turnos`),
+                    fetch(`${API_BASE}/api/stats`),
+                  ]);
+                  if (!tRes.ok || !sRes.ok) throw new Error('No se pudo conectar con el servidor.');
+                  const turnos = await tRes.json();
+                  const stats = await sRes.json();
+                  // Filtrar por la fecha seleccionada (campo 'fecha' o comparar creadoEn)
+                  const filtrados = turnos.filter(t => {
+                    if (t.fecha) return t.fecha === this.reportFechaFrom;
+                    // fallback: comparar por fecha local del campo creadoEn
+                    const d = new Date(t.creadoEn);
+                    const fechaTurno = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    return fechaTurno === this.reportFechaFrom;
+                  });
+                  this.reportData = {
+                    fecha: this.reportFechaFrom,
+                    total: filtrados.length,
+                    atendidos: filtrados.filter(t => t.estado === 'atendido').length,
+                    saltados: filtrados.filter(t => t.estado === 'saltado').length,
+                    pendientes: filtrados.filter(t => t.estado === 'pendiente').length,
+                    llamados: filtrados.filter(t => t.estado === 'llamado').length,
+                    turnos: filtrados,
+                  };
+                } else {
+                  throw new Error(`Error ${resp.status} al cargar el informe.`);
+                }
 
-            if (!r.ok) {
-              throw new Error(data.error || 'Error al llamar el siguiente turno');
-            }
-
-            this.turnoActual = data;
-            this.registrarLlamado(data._id);
-            await this.loadAll();
-            this.triggerAnimation();
-            await Voice.announce(data, 2,
-              () => this.isSpeaking = true,
-              () => this.isSpeaking = false
-            );
-          } catch (e) {
-            console.error(e);
-            this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
-          } finally {
-            this.loading = false;
-          }
-        },
-
-
-        async llamarEspecifico(turno) {
-          try {
-            const r = await fetch(`${API_BASE}/api/turnos/${turno._id}/llamar`, { method: 'POST' });
-            const data = await r.json();
-
-            if (!r.ok) throw new Error(data.error || 'Error al llamar');
-
-            this.turnoActual = data;
-            this.registrarLlamado(this.turnoActual._id);
-            await this.loadAll();
-            this.triggerAnimation();
-            await Voice.announce(this.turnoActual, 2,
-              () => this.isSpeaking = true,
-              () => this.isSpeaking = false
-            );
-          } catch (e) {
-            this.showToast(e.message || 'Error al llamar turno', 'mdi-alert-circle-outline');
-          }
-        },
-
-        repetirLlamado() {
-          if (!this.turnoActual || this.isSpeaking) return;
-          Voice.announce(this.turnoActual, 1,
-            () => this.isSpeaking = true,
-            () => this.isSpeaking = false
-          );
-        },
-
-        async marcarAtendido() {
-          if (!this.turnoActual) return;
-          try {
-            const r = await fetch(`${API_BASE}/api/turnos/${this.turnoActual._id}/atender`, { method: 'POST' });
-            if (!r.ok) throw new Error();
-            this.registrarAtendido(this.turnoActual._id);
-            this.turnoActual = null;
-            await this.loadAll();
-            this.showToast('Turno marcado como atendido', 'mdi-check-circle');
-          } catch {
-            this.showToast('Error al actualizar turno', 'mdi-alert-circle-outline');
-          }
-        },
-
-        async saltarTurno() {
-          if (!this.turnoActual) return;
-          try {
-            const r = await fetch(`${API_BASE}/api/turnos/${this.turnoActual._id}/saltar`, { method: 'POST' });
-            if (!r.ok) throw new Error();
-            this.registrarAtendido(this.turnoActual._id);
-            this.turnoActual = null;
-            await this.loadAll();
-            this.showToast('Turno saltado', 'mdi-skip-next');
-          } catch {
-            this.showToast('Error al saltar turno', 'mdi-alert-circle-outline');
-          }
-        },
-
-        triggerAnimation() {
-          this.animating = false;
-          this.$nextTick(() => {
-            this.animating = true;
-            setTimeout(() => this.animating = false, 600);
-          });
-        },
-
-        showToast(text, icon = 'mdi-check-circle') {
-          clearTimeout(this._toastTimer);
-          this.toast = { visible: true, text, icon };
-          this._toastTimer = setTimeout(() => this.toast.visible = false, 3000);
-        },
-
-        servicioIcon(s) { return SERVICE_ICONS[s] || 'mdi-cart-outline'; },
-
-        abrirInforme() {
-          this.reportFecha = new Date().toLocaleString('es-CO', {
-            weekday: 'long',
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-          });
-          // Reset del reporte
-          this.reportType = 'dia';
-          this.reportFechaFrom = this.fechaLocal();
-          this.reportFechaTo = this.fechaLocal();
-          this.reportMes = this.fechaLocal().slice(0, 7);
-          this.reportData = null;
-          this.showReport = true;
-          // Cargar datos automáticamente
-          setTimeout(() => this.cargarReporte(), 100);
-        },
-
-        async cargarReporte() {
-          this.reportCargando = true;
-          this.reportData = null;
-          try {
-            // ── Reporte Por Día ──────────────────────────────────────────────
-            // Intenta primero la ruta dedicada; si no existe (backend viejo),
-            // cae en fallback usando /api/turnos + /api/stats (siempre disponibles).
-            if (this.reportType === 'dia') {
-              const url = `${API_BASE}/api/reportes/dia/${this.reportFechaFrom}`;
-              const resp = await fetch(url);
-
-              if (resp.ok) {
+                // ── Reporte por Rango de Fechas ──────────────────────────────────
+              } else if (this.reportType === 'rango') {
+                if (!this.reportFechaFrom || !this.reportFechaTo) {
+                  this.showToast('Selecciona las fechas Desde y Hasta', 'mdi-alert-circle-outline');
+                  return;
+                }
+                const url = `${API_BASE}/api/reportes/rango?desde=${this.reportFechaFrom}&hasta=${this.reportFechaTo}`;
+                const resp = await fetch(url);
+                if (resp.status === 404) {
+                  this.showToast('Actualiza el backend en Render para usar reportes por rango', 'mdi-alert-circle-outline');
+                  return;
+                }
+                if (!resp.ok) throw new Error(`Error ${resp.status}`);
                 this.reportData = await resp.json();
-              } else if (resp.status === 404) {
-                // ── Fallback: usar endpoints existentes (backend no actualizado) ──
-                const [tRes, sRes] = await Promise.all([
-                  fetch(`${API_BASE}/api/turnos`),
-                  fetch(`${API_BASE}/api/stats`),
-                ]);
-                if (!tRes.ok || !sRes.ok) throw new Error('No se pudo conectar con el servidor.');
-                const turnos = await tRes.json();
-                const stats  = await sRes.json();
-                // Filtrar por la fecha seleccionada (campo 'fecha' o comparar creadoEn)
-                const filtrados = turnos.filter(t => {
-                  if (t.fecha) return t.fecha === this.reportFechaFrom;
-                  // fallback: comparar por fecha local del campo creadoEn
-                  const d = new Date(t.creadoEn);
-                  const fechaTurno = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-                  return fechaTurno === this.reportFechaFrom;
-                });
-                this.reportData = {
-                  fecha:      this.reportFechaFrom,
-                  total:      filtrados.length,
-                  atendidos:  filtrados.filter(t => t.estado === 'atendido').length,
-                  saltados:   filtrados.filter(t => t.estado === 'saltado').length,
-                  pendientes: filtrados.filter(t => t.estado === 'pendiente').length,
-                  llamados:   filtrados.filter(t => t.estado === 'llamado').length,
-                  turnos:     filtrados,
-                };
-              } else {
-                throw new Error(`Error ${resp.status} al cargar el informe.`);
+
+                // ── Reporte por Mes ──────────────────────────────────────────────
+              } else if (this.reportType === 'mes') {
+                if (!this.reportMes) {
+                  this.showToast('Selecciona el mes', 'mdi-alert-circle-outline');
+                  return;
+                }
+                const url = `${API_BASE}/api/reportes/mes?mes=${this.reportMes}`;
+                const resp = await fetch(url);
+                if (resp.status === 404) {
+                  this.showToast('Actualiza el backend en Render para usar reportes por mes', 'mdi-alert-circle-outline');
+                  return;
+                }
+                if (!resp.ok) throw new Error(`Error ${resp.status}`);
+                this.reportData = await resp.json();
               }
 
-            // ── Reporte por Rango de Fechas ──────────────────────────────────
-            } else if (this.reportType === 'rango') {
-              if (!this.reportFechaFrom || !this.reportFechaTo) {
-                this.showToast('Selecciona las fechas Desde y Hasta', 'mdi-alert-circle-outline');
-                return;
-              }
-              const url = `${API_BASE}/api/reportes/rango?desde=${this.reportFechaFrom}&hasta=${this.reportFechaTo}`;
-              const resp = await fetch(url);
-              if (resp.status === 404) {
-                this.showToast('Actualiza el backend en Render para usar reportes por rango', 'mdi-alert-circle-outline');
-                return;
-              }
-              if (!resp.ok) throw new Error(`Error ${resp.status}`);
-              this.reportData = await resp.json();
-
-            // ── Reporte por Mes ──────────────────────────────────────────────
-            } else if (this.reportType === 'mes') {
-              if (!this.reportMes) {
-                this.showToast('Selecciona el mes', 'mdi-alert-circle-outline');
-                return;
-              }
-              const url = `${API_BASE}/api/reportes/mes?mes=${this.reportMes}`;
-              const resp = await fetch(url);
-              if (resp.status === 404) {
-                this.showToast('Actualiza el backend en Render para usar reportes por mes', 'mdi-alert-circle-outline');
-                return;
-              }
-              if (!resp.ok) throw new Error(`Error ${resp.status}`);
-              this.reportData = await resp.json();
+            } catch (e) {
+              console.error('Error al cargar reporte:', e);
+              this.showToast('Error: ' + e.message, 'mdi-alert-circle');
+            } finally {
+              this.reportCargando = false;
             }
+          },
 
-          } catch (e) {
-            console.error('Error al cargar reporte:', e);
-            this.showToast('Error: ' + e.message, 'mdi-alert-circle');
-          } finally {
-            this.reportCargando = false;
-          }
-        },
-
-        turnosParaMostrar() {
-          if (!this.reportData) return [];
-          if (this.reportType === 'dia') {
-            return this.reportData.turnos || [];
-          }
-          // Para rango y mes, flatten los turnos
-          const turnos = [];
-          Object.values(this.reportData.porFecha || {}).forEach(dia => {
-            turnos.push(...dia);
-          });
-          return turnos;
-        },
-
-        institutocionesPorMes() {
-          if (!this.reportData || this.reportType !== 'mes') return [];
-          const instituciones = {};
-          Object.values(this.reportData.porFecha || {}).forEach(dia => {
-            dia.forEach(turno => {
-              if (!instituciones[turno.institucion]) {
-                instituciones[turno.institucion] = {
-                  nombre: turno.institucion,
-                  total: 0,
-                  atendidos: 0,
-                  saltados: 0
-                };
-              }
-              instituciones[turno.institucion].total++;
-              if (turno.estado === 'atendido') instituciones[turno.institucion].atendidos++;
-              if (turno.estado === 'saltado') instituciones[turno.institucion].saltados++;
+          turnosParaMostrar() {
+            if (!this.reportData) return [];
+            if (this.reportType === 'dia') {
+              return this.reportData.turnos || [];
+            }
+            // Para rango y mes, flatten los turnos
+            const turnos = [];
+            Object.values(this.reportData.porFecha || {}).forEach(dia => {
+              turnos.push(...dia);
             });
-          });
-          return Object.values(instituciones).sort((a, b) => b.total - a.total);
-        },
+            return turnos;
+          },
 
-        // ── Helper: fecha local (evita bug UTC en Colombia) ──────────────────
-        fechaLocal() {
-          const d = new Date();
-          return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-        },
+          institutocionesPorMes() {
+            if (!this.reportData || this.reportType !== 'mes') return [];
+            const instituciones = {};
+            Object.values(this.reportData.porFecha || {}).forEach(dia => {
+              dia.forEach(turno => {
+                if (!instituciones[turno.institucion]) {
+                  instituciones[turno.institucion] = {
+                    nombre: turno.institucion,
+                    total: 0,
+                    atendidos: 0,
+                    saltados: 0
+                  };
+                }
+                instituciones[turno.institucion].total++;
+                if (turno.estado === 'atendido') instituciones[turno.institucion].atendidos++;
+                if (turno.estado === 'saltado') instituciones[turno.institucion].saltados++;
+              });
+            });
+            return Object.values(instituciones).sort((a, b) => b.total - a.total);
+          },
 
-        // ── Imprimir informe completo ─────────────────────────────────────────
-        imprimirInforme() {
-          if (!this.reportData) { this.showToast('Primero genera un informe', 'mdi-alert-circle-outline'); return; }
+          // ── Helper: fecha local (evita bug UTC en Colombia) ──────────────────
+          fechaLocal() {
+            const d = new Date();
+            return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          },
 
-          const rd   = this.reportData;
-          const tipo = this.reportType;
+          // ── Imprimir informe completo ─────────────────────────────────────────
+          imprimirInforme() {
+            if (!this.reportData) { this.showToast('Primero genera un informe', 'mdi-alert-circle-outline'); return; }
 
-          // ── Encabezado descriptivo ──────────────────────────────────────────
-          let periodoTexto = '';
-          if (tipo === 'dia')   periodoTexto = `Fecha: <strong>${this.reportFechaFrom}</strong>`;
-          if (tipo === 'rango') periodoTexto = `Período: <strong>${this.reportFechaFrom}</strong> al <strong>${this.reportFechaTo}</strong>`;
-          if (tipo === 'mes')   periodoTexto = `Mes: <strong>${this.reportMes}</strong>`;
+            const rd = this.reportData;
+            const tipo = this.reportType;
 
-          // ── Stats boxes ─────────────────────────────────────────────────────
-          const statsHtml = `
+            // ── Encabezado descriptivo ──────────────────────────────────────────
+            let periodoTexto = '';
+            if (tipo === 'dia') periodoTexto = `Fecha: <strong>${this.reportFechaFrom}</strong>`;
+            if (tipo === 'rango') periodoTexto = `Período: <strong>${this.reportFechaFrom}</strong> al <strong>${this.reportFechaTo}</strong>`;
+            if (tipo === 'mes') periodoTexto = `Mes: <strong>${this.reportMes}</strong>`;
+
+            // ── Stats boxes ─────────────────────────────────────────────────────
+            const statsHtml = `
             <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:20px 0;">
               <div style="border:1.5px solid #e0e0e0;border-radius:10px;padding:14px;text-align:center;">
                 <div style="font-size:2rem;font-weight:800;color:#0D2137">${rd.total}</div>
@@ -2127,15 +2156,15 @@
               </div>
             </div>`;
 
-          // ── Tabla de turnos (día y rango) ───────────────────────────────────
-          let tablaHtml = '';
-          const estadoColor = { atendido:'#2E7D32', saltado:'#E65100', llamado:'#005FA6', pendiente:'#BF360C' };
-          const estadoLabel = { atendido:'Atendido', saltado:'Saltado', llamado:'Llamado', pendiente:'Esperando' };
+            // ── Tabla de turnos (día y rango) ───────────────────────────────────
+            let tablaHtml = '';
+            const estadoColor = { atendido: '#2E7D32', saltado: '#E65100', llamado: '#005FA6', pendiente: '#BF360C' };
+            const estadoLabel = { atendido: 'Atendido', saltado: 'Saltado', llamado: 'Llamado', pendiente: 'Esperando' };
 
-          if (tipo === 'dia' || tipo === 'rango') {
-            const filas = this.turnosParaMostrar();
-            const mostrarFecha = tipo === 'rango';
-            tablaHtml = `
+            if (tipo === 'dia' || tipo === 'rango') {
+              const filas = this.turnosParaMostrar();
+              const mostrarFecha = tipo === 'rango';
+              tablaHtml = `
               <table style="width:100%;border-collapse:collapse;font-size:10pt;margin-top:8px">
                 <thead>
                   <tr style="background:#EEF3F8">
@@ -2152,27 +2181,27 @@
                 </thead>
                 <tbody>
                   ${filas.map((t, i) => `
-                    <tr style="${i%2===1?'background:#f9f9f9':''}">
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:700;color:#005FA6;font-family:monospace">${String(t.numero).padStart(3,'0')}</td>
-                      ${mostrarFecha ? `<td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.fecha||'—'}</td>` : ''}
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.nombre||'—'}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.institucion||'—'}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.documento||'—'}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.servicio||'—'}</td>
+                    <tr style="${i % 2 === 1 ? 'background:#f9f9f9' : ''}">
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:700;color:#005FA6;font-family:monospace">${String(t.numero).padStart(3, '0')}</td>
+                      ${mostrarFecha ? `<td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.fecha || '—'}</td>` : ''}
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.nombre || '—'}</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.institucion || '—'}</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt">${t.documento || '—'}</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">${t.servicio || '—'}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt;white-space:nowrap">${this.fmtDateTime(t.creadoEn)}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;color:#5C7A96;font-size:9pt;white-space:nowrap">${this.fmtDateTime(t.atendidoEn)}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0">
-                        <span style="background:${estadoColor[t.estado]||'#999'}22;color:${estadoColor[t.estado]||'#999'};font-size:8pt;font-weight:700;padding:3px 9px;border-radius:99px">${estadoLabel[t.estado]||t.estado}</span>
+                        <span style="background:${estadoColor[t.estado] || '#999'}22;color:${estadoColor[t.estado] || '#999'};font-size:8pt;font-weight:700;padding:3px 9px;border-radius:99px">${estadoLabel[t.estado] || t.estado}</span>
                       </td>
                     </tr>`).join('')}
                 </tbody>
               </table>`;
-          }
+            }
 
-          // ── Tabla de instituciones (mes) ────────────────────────────────────
-          if (tipo === 'mes') {
-            const insts = this.institutocionesPorMes();
-            tablaHtml = `
+            // ── Tabla de instituciones (mes) ────────────────────────────────────
+            if (tipo === 'mes') {
+              const insts = this.institutocionesPorMes();
+              tablaHtml = `
               <table style="width:100%;border-collapse:collapse;font-size:10pt;margin-top:8px">
                 <thead>
                   <tr style="background:#EEF3F8">
@@ -2185,20 +2214,20 @@
                 </thead>
                 <tbody>
                   ${insts.map((inst, i) => `
-                    <tr style="${i%2===1?'background:#f9f9f9':''}">
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:600">${inst.nombre||'(Sin nombre)'}</td>
+                    <tr style="${i % 2 === 1 ? 'background:#f9f9f9' : ''}">
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;font-weight:600">${inst.nombre || '(Sin nombre)'}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;font-family:monospace">${inst.total}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;color:#2E7D32;font-weight:700">${inst.atendidos}</td>
                       <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;color:#E65100;font-weight:700">${inst.saltados}</td>
-                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;color:#005FA6">${inst.total > 0 ? Math.round((inst.atendidos/inst.total)*100) : 0}%</td>
+                      <td style="padding:7px 10px;border-bottom:1px solid #e0e0e0;text-align:center;font-weight:700;color:#005FA6">${inst.total > 0 ? Math.round((inst.atendidos / inst.total) * 100) : 0}%</td>
                     </tr>`).join('')}
                 </tbody>
               </table>`;
-          }
+            }
 
-          // ── Construir y abrir ventana ────────────────────────────────────────
-          const win = window.open('', '_blank', 'width=1000,height=750');
-          win.document.write(`<!DOCTYPE html><html lang="es"><head>
+            // ── Construir y abrir ventana ────────────────────────────────────────
+            const win = window.open('', '_blank', 'width=1000,height=750');
+            win.document.write(`<!DOCTYPE html><html lang="es"><head>
             <meta charset="UTF-8"/>
             <title>Informe FUBAM – Turnos</title>
             <style>
@@ -2234,63 +2263,63 @@
               Sistema de Turnos FUBAM · Documento generado automáticamente
             </div>
           </body></html>`);
-          win.document.close();
-          win.focus();
-        },
+            win.document.close();
+            win.focus();
+          },
 
-        fmtDateTime(fecha) {
-          if (!fecha) return '—';
+          fmtDateTime(fecha) {
+            if (!fecha) return '—';
 
-          return new Date(fecha).toLocaleString('es-CO', {
-            year: 'numeric',
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-          });
-        },
+            return new Date(fecha).toLocaleString('es-CO', {
+              year: 'numeric',
+              month: '2-digit',
+              day: '2-digit',
+              hour: '2-digit',
+              minute: '2-digit',
+              second: '2-digit',
+              hour12: true
+            });
+          },
 
 
-        registrarLlamado(id) {
-          if (!this.turnoTimestamps[id]) {
-            this.turnoTimestamps[id] = {};
-          }
+          registrarLlamado(id) {
+            if (!this.turnoTimestamps[id]) {
+              this.turnoTimestamps[id] = {};
+            }
 
-          if (!this.turnoTimestamps[id].llamado) {
-            this.turnoTimestamps[id].llamado = new Date().toISOString();
-            this.guardarTimestamps();
-          }
-        },
+            if (!this.turnoTimestamps[id].llamado) {
+              this.turnoTimestamps[id].llamado = new Date().toISOString();
+              this.guardarTimestamps();
+            }
+          },
 
-        guardarTimestamps() {
-          localStorage.setItem('fubam_timestamps', JSON.stringify(this.turnoTimestamps));
-        },
+          guardarTimestamps() {
+            localStorage.setItem('fubam_timestamps', JSON.stringify(this.turnoTimestamps));
+          },
 
-        registrarAtendido(id) {
-          if (!this.turnoTimestamps[id]) {
-            this.turnoTimestamps[id] = {};
-          }
+          registrarAtendido(id) {
+            if (!this.turnoTimestamps[id]) {
+              this.turnoTimestamps[id] = {};
+            }
 
-          if (!this.turnoTimestamps[id].atendido) {
-            this.turnoTimestamps[id].atendido = new Date().toISOString();
-            this.guardarTimestamps();
-          }
-        },
+            if (!this.turnoTimestamps[id].atendido) {
+              this.turnoTimestamps[id].atendido = new Date().toISOString();
+              this.guardarTimestamps();
+            }
+          },
 
-        
 
-        estadoLabel(estado) {
-          const map = { pendiente: 'Esperando', llamado: 'Llamado', atendido: 'Atendido', saltado: 'Saltado' };
-          return map[estado] || estado;
-        },
-        badgeClass(estado) {
-          const map = { pendiente: 'badge-pending', llamado: 'badge-called', atendido: 'badge-attended', saltado: 'badge-skipped' };
-          return map[estado] || '';
-        },
-      }
-    }).mount('#app');
+
+          estadoLabel(estado) {
+            const map = { pendiente: 'Esperando', llamado: 'Llamado', atendido: 'Atendido', saltado: 'Saltado' };
+            return map[estado] || estado;
+          },
+          badgeClass(estado) {
+            const map = { pendiente: 'badge-pending', llamado: 'badge-called', atendido: 'badge-attended', saltado: 'badge-skipped' };
+            return map[estado] || '';
+          },
+        }
+      }).mount('#app');
   </script>
 </body>
 
